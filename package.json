@@ -1,0 +1,32 @@
+{
+  "name": "generator-springboot-api",
+  "version": "0.0.1",
+  "description": "SpringBoot Generator\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[DAPI Generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leobarreiro/generator-springboot-api.git"
+  },
+  "keywords": [
+    "yeoman-generator",
+    "springboot",
+    "javaleo.org"
+  ],
+  "author": "Leopoldo B Barreiro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leobarreiro/generator-springboot-api/issues"
+  },
+  "homepage": "https://github.com/leobarreiro/generator-springboot-api#readme",
+  "dependencies": {
+    "decamelize": "^1.2.0",
+    "uppercamelcase": "^3.0.0",
+    "yeoman-generator": "^3.2.0"
+  },
+  "files": [
+    "app"
+  ]
+}
