@@ -1,9 +1,7 @@
 node_modules/
 target/
 .mvn/
-.package-lock.json
 .vscode
-package-lock.json
 
 ### STS ###
 .apt_generated
