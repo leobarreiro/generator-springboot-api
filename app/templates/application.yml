@@ -1,0 +1,19 @@
+logging:
+  level:
+    <%= groupId %>: INFO
+    org.springframework.boot.context: INFO
+server:
+  compression:
+    enabled: true
+  context-path: <%= artifactId %>/
+  port: ${SERVER_PORT:8080}
+springfox:
+  documentation:
+    swagger.v2.path: /v2/api-docs
+    info:
+      title: 
+      description: <%= titleApplication %>.
+      version: 1.0
+    base-package: <%= groupId %>
+management:
+  port: 9090
