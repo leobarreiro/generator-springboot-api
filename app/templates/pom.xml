@@ -12,9 +12,9 @@
 		<relativePath />
 	</parent>
 	
-	<groupId><%= groupId %></groupId>
-	<artifactId><%= artifactId %></artifactId>
-	<name>API Base</name>
+	<groupId><%= group %></groupId>
+	<artifactId><%= artifact %></artifactId>
+	<name><%= appname %></name>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -33,24 +33,26 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<% if (container != 'tomcat') { %>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
-			</exclusions>
+			</exclusions><% } %>
 		</dependency>
+		<% if (container != 'tomcat') { %>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-<%= containerId %></artifactId>
-		</dependency>
-		
+			<artifactId>spring-boot-starter-<%= container %></artifactId>
+		</dependency><% } %>
+		<% if (devtools) { %>
 		<!-- devtools -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
-		</dependency>
+		</dependency><% } %>
 		
 		<!-- lombok -->
 		<dependency>

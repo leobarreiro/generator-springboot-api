@@ -3,6 +3,7 @@
 const { closeSync, openSync } = require('fs');
 const touch = filename => closeSync(openSync(filename, 'w'));
 const Generator = require('yeoman-generator');
+const Prompt = require('prompt-checkbox');
 
 module.exports = class extends Generator {
 	constructor(args, opts) {
@@ -11,7 +12,7 @@ module.exports = class extends Generator {
 	}
 	
 	start() {
-		this.log('Do something...');
+		
 		this.prompt([
 			{
 				type    : 'input',
@@ -34,7 +35,7 @@ module.exports = class extends Generator {
 			}, 
 			{
 				type 	: 'input', 
-				name 	: 'applicationName', 
+				name 	: 'appname', 
 				default : 'Api Base Application', 
 				message : 'Type the application Title [Api Base Application]: ' 
 			}, 
@@ -49,18 +50,20 @@ module.exports = class extends Generator {
 				type	: 'checkbox', 
 				name	: 'options',  
 				message : 'Select the aditional options as below: ', 
+				radio 	: true, 
 				choices : [
 					{name: 'Git integration', value: 'git'}, 
+					{name: 'DEV Tools', value: 'devtools'}, 
 					{name: 'Mensageria', value: 'rabbitmq'}, 
 					{name: 'JPA', value: 'jpa'}, 
-					{name: 'SGDB MySQL', value: 'mysql'}, 
-					{name: 'SGDB Postgres', value: 'postgres'}, 
-					{name: 'Cache Redis', value: 'redis'}, 
+					{name: 'MySQL', value: 'mysql'}, 
+					{name: 'Postgres', value: 'postgres'}, 
+					{name: 'Redis', value: 'redis'}, 
+					{name: 'Cache', value: 'cache'}, 
 					{name: 'MongoDB', value: 'mongodb'}
 				]
 			}
 		]).then((answers) => {
-			console.log(answers.options);
 			this.destinationRoot(answers.artifact);
 			closeSync(openSync('README.md', 'w'));
 			closeSync(openSync('.gitignore', 'w'));
@@ -68,22 +71,24 @@ module.exports = class extends Generator {
 				this.templatePath('pom.xml'),
 				this.destinationPath('pom.xml'), 
 				{
-					artifactId: answers.artifact, 
-					groupId: answers.group, 
-					containerId: answers.container
+					artifact	: answers.artifact, 
+					group		: answers.group, 
+					container	: answers.container, 
+					appname		: answers.appname, 
+					devtools 	: answers.options.includes('devtools')
 				}
 			);
 			this.destinationRoot('src/main/resources');
 			this.destinationRoot('../java');
 			var packagePath = answers.group.split('.').join('/');
 			this.destinationRoot(packagePath);
-			var strApp = answers.applicationName.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
+			var strApp = answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
 			this.fs.copyTpl(
 				this.templatePath('ApiApplication.java'),
 				this.destinationPath(strApp + '.java'), 
 				{
-					applicationName: strApp, 
-					groupId: answers.group
+					appname	: strApp, 
+					group	: answers.group
 				}
 			);
 		});
