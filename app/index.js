@@ -64,6 +64,13 @@ module.exports = class extends Generator {
 				]
 			}
 		]).then((answers) => {
+			var redis = answers.options.includes('redis');
+			var devtools = answers.options.includes('devtools');
+			var basePackage = answers.group;
+			var packageConfig = basePackage + '.config';
+			var packagePath = answers.group.split('.').join('/');
+			var strApp = answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
+			
 			this.destinationRoot(answers.artifact);
 			closeSync(openSync('README.md', 'w'));
 			closeSync(openSync('.gitignore', 'w'));
@@ -72,25 +79,43 @@ module.exports = class extends Generator {
 				this.destinationPath('pom.xml'), 
 				{
 					artifact	: answers.artifact, 
-					group		: answers.group, 
+					group		: basePackage, 
 					container	: answers.container, 
 					appname		: answers.appname, 
-					devtools 	: answers.options.includes('devtools')
+					devtools 	: devtools, 
+					redis 		: redis
 				}
 			);
 			this.destinationRoot('src/main/resources');
 			this.destinationRoot('../java');
-			var packagePath = answers.group.split('.').join('/');
 			this.destinationRoot(packagePath);
-			var strApp = answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
 			this.fs.copyTpl(
 				this.templatePath('ApiApplication.java'),
 				this.destinationPath(strApp + '.java'), 
 				{
 					appname	: strApp, 
-					group	: answers.group
+					group	: basePackage
 				}
 			);
+			
+			// Configs
+			this.destinationRoot('./config');
+			if (redis) {
+				this.fs.copyTpl(
+					this.templatePath('CacheConfig.java'), 
+					this.destinationPath('CacheConfig.java'), 
+					{
+						packageConfig: packageConfig
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('CacheKeyGenerator.java'), 
+					this.destinationPath('CacheKeyGenerator.java'), 
+					{
+						packageConfig: packageConfig
+					}
+				);
+			}
 		});
 	}
 };

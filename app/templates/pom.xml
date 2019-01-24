@@ -33,16 +33,14 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<% if (container != 'tomcat') { %>
-			<exclusions>
+			<% if (container != 'tomcat') { %><exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
 			</exclusions><% } %>
 		</dependency>
-		<% if (container != 'tomcat') { %>
-		<dependency>
+		<% if (container != 'tomcat') { %><dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-<%= container %></artifactId>
 		</dependency><% } %>
@@ -52,6 +50,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
+		</dependency>
+		<% } if (redis) { %>
+		<!-- redis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency><% } %>
 		
 		<!-- lombok -->
