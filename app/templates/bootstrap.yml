@@ -1,0 +1,6 @@
+logging:
+  level:
+    root: WARN
+spring:
+  application:
+    name: <%= artifact %>

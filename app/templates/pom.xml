@@ -64,7 +64,7 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+		<% if (swagger) { %>
 		<!-- swagger -->
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -75,7 +75,7 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${springfox.version}</version>
-		</dependency>
+		</dependency><% } %>
 
 	</dependencies>
 	
