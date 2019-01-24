@@ -55,9 +55,9 @@ module.exports = class extends Generator {
 					{name: 'Git Repo', value: 'git'}, 
 					{name: 'Devtools', value: 'devtools'}, 
 					{name: 'Swagger Docs', value: 'swagger'}, 
+					{name: 'Redis Cache', value: 'redis'}, 
 					{name: 'RabbitMQ', value: 'rabbitmq'}, 
 					{name: 'Postgres', value: 'postgres'}, 
-					{name: 'Redis Cache', value: 'redis'}, 
 					{name: 'MongoDB', value: 'mongodb'}
 				]
 			}
@@ -69,6 +69,7 @@ module.exports = class extends Generator {
 			var artifactName = answers.artifact;
 			var packageConfig = packageRoot + '.config';
 			var packagePath = answers.group.split('.').join('/');
+			var appTitle = answers.appname;
 			var appName = answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
 			
 			// root files
@@ -82,7 +83,7 @@ module.exports = class extends Generator {
 					artifact	: artifactName, 
 					group		: packageRoot, 
 					container	: answers.container, 
-					appname		: appname, 
+					apptitle	: appTitle, 
 					swagger 	: swagger, 
 					devtools 	: devtools, 
 					redis 		: redis
@@ -95,16 +96,18 @@ module.exports = class extends Generator {
 				this.templatePath('application.yml'),
 				this.destinationPath('application.yml'), 
 				{
-					appname		: appName, 
-					artifact 	: artifact, 
-					packageRoot	: packageRoot
+					apptitle	: appTitle, 
+					artifact 	: artifactName, 
+					packageroot	: packageRoot, 
+					swagger 	: swagger, 
+					redis 		: redis
 				}
 			);
 			this.fs.copyTpl(
 				this.templatePath('bootstrap.yml'),
 				this.destinationPath('bootstrap.yml'), 
 				{
-					artifact 	: artifact
+					artifact 	: artifactName
 				}
 			);
 			

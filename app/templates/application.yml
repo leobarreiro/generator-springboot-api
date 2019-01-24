@@ -1,20 +1,20 @@
 logging:
   level:
-    <%= packageRoot %>: INFO
+    <%= packageroot %>: INFO
     org.springframework.boot.context: INFO
 server:
   compression:
     enabled: true
-  context-path: <%= artifact %>/
+  context-path: /<%= artifact %>
   port: 8080
 <%if (swagger) { %>springfox:
   documentation:
     swagger.v2.path: /v2/api-docs
     info:
       title: 
-      description: <%= appName %> Docs.
+      description: <%= apptitle %> Docs.
       version: 1.0
-    base-package: <%= packageRoot %><% } %>
+    base-package: <%= packageroot %><% } %>
 management:
   port: 9090
 spring:
