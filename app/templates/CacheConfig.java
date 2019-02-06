@@ -27,6 +27,7 @@ public class CacheConfig extends CachingConfigurerSupport {
 		manager.setUsePrefix(true);
 		manager.setDefaultExpiration(90L);
 		Map<String, Long> mapExpires = new HashMap<>();
+		mapExpires.put("hello-world", 60L);
 		/* Create the entries to your cache set, as below:
 		 * mapExpires.put("cache-group-1", 60L);
 		 * mapExpires.put("cache-group-2", 300L); 

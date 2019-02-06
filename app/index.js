@@ -68,6 +68,7 @@ module.exports = class extends Generator {
 			var packageRoot = answers.group;
 			var artifactName = answers.artifact;
 			var packageConfig = packageRoot + '.config';
+			var packageEndpoint = packageRoot + '.endpoint';
 			var packagePath = answers.group.split('.').join('/');
 			var appTitle = answers.appname;
 			var appName = answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
@@ -153,6 +154,17 @@ module.exports = class extends Generator {
 					}
 				);
 			}
+			
+			// java::endpoint
+			this.destinationRoot('../endpoint');
+			this.fs.copyTpl(
+				this.templatePath('ApiBaseEndpoint.java'), 
+				this.destinationPath('ApiBaseEndpoint.java'), 
+				{
+					packageEndpoint	: packageEndpoint, 
+					redis			: redis
+				}
+			);
 		});
 	}
 };
