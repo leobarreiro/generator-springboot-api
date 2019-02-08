@@ -56,18 +56,20 @@ module.exports = class extends Generator {
 					{name: 'Devtools', value: 'devtools'}, 
 					{name: 'Swagger Docs', value: 'swagger'}, 
 					{name: 'Redis Cache', value: 'redis'}, 
-					{name: 'RabbitMQ', value: 'rabbitmq'}, 
+					{name: 'RabbitMQ', value: 'rabbit'}, 
 					{name: 'Postgres', value: 'postgres'}, 
 					{name: 'MongoDB', value: 'mongodb'}
 				]
 			}
 		]).then((answers) => {
 			var redis = answers.options.includes('redis');
+			var rabbit = answers.options.includes('rabbit');
 			var swagger = answers.options.includes('swagger');
 			var devtools = answers.options.includes('devtools');
 			var packageRoot = answers.group;
 			var artifactName = answers.artifact;
 			var packageConfig = packageRoot + '.config';
+			var packageService = packageRoot + '.service';
 			var packageEndpoint = packageRoot + '.endpoint';
 			var packagePath = answers.group.split('.').join('/');
 			var appTitle = answers.appname;
@@ -101,7 +103,8 @@ module.exports = class extends Generator {
 					artifact 	: artifactName, 
 					packageroot	: packageRoot, 
 					swagger 	: swagger, 
-					redis 		: redis
+					redis 		: redis, 
+					rabbit 		: rabbit
 				}
 			);
 			this.fs.copyTpl(
@@ -154,6 +157,18 @@ module.exports = class extends Generator {
 					}
 				);
 			}
+
+			// java::service
+			this.destinationRoot('../service');
+			this.fs.copyTpl(
+				this.templatePath('ApiBaseService.java'), 
+				this.destinationPath('ApiBaseService.java'), 
+				{
+					packageService	: packageService, 
+					redis			: redis, 
+					rabbit 			: rabbit
+				}
+			);
 			
 			// java::endpoint
 			this.destinationRoot('../endpoint');
