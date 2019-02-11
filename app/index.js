@@ -52,18 +52,30 @@ module.exports = class extends Generator {
 				message : 'Select the aditional options as below: ', 
 				radio 	: true, 
 				choices : [
-					{name: 'Git integration', value: 'git'}, 
-					{name: 'DEV Tools', value: 'devtools'}, 
-					{name: 'Mensageria', value: 'rabbitmq'}, 
-					{name: 'JPA', value: 'jpa'}, 
-					{name: 'MySQL', value: 'mysql'}, 
+					{name: 'Git Repo', value: 'git'}, 
+					{name: 'Devtools', value: 'devtools'}, 
+					{name: 'Swagger Docs', value: 'swagger'}, 
+					{name: 'Redis Cache', value: 'redis'}, 
+					{name: 'RabbitMQ', value: 'rabbit'}, 
 					{name: 'Postgres', value: 'postgres'}, 
-					{name: 'Redis', value: 'redis'}, 
-					{name: 'Cache', value: 'cache'}, 
 					{name: 'MongoDB', value: 'mongodb'}
 				]
 			}
 		]).then((answers) => {
+			var redis = answers.options.includes('redis');
+			var rabbit = answers.options.includes('rabbit');
+			var swagger = answers.options.includes('swagger');
+			var devtools = answers.options.includes('devtools');
+			var packageRoot = answers.group;
+			var artifactName = answers.artifact;
+			var packageConfig = packageRoot + '.config';
+			var packageService = packageRoot + '.service';
+			var packageEndpoint = packageRoot + '.endpoint';
+			var packagePath = answers.group.split('.').join('/');
+			var appTitle = answers.appname;
+			var appName = answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
+			
+			// root files
 			this.destinationRoot(answers.artifact);
 			closeSync(openSync('README.md', 'w'));
 			closeSync(openSync('.gitignore', 'w'));
@@ -71,24 +83,101 @@ module.exports = class extends Generator {
 				this.templatePath('pom.xml'),
 				this.destinationPath('pom.xml'), 
 				{
-					artifact	: answers.artifact, 
-					group		: answers.group, 
+					artifact	: artifactName, 
+					group		: packageRoot, 
 					container	: answers.container, 
-					appname		: answers.appname, 
-					devtools 	: answers.options.includes('devtools')
+					apptitle	: appTitle, 
+					swagger 	: swagger, 
+					devtools 	: devtools, 
+					redis 		: redis
 				}
 			);
+			
+			// resources
 			this.destinationRoot('src/main/resources');
-			this.destinationRoot('../java');
-			var packagePath = answers.group.split('.').join('/');
+			this.fs.copyTpl(
+				this.templatePath('application.yml'),
+				this.destinationPath('application.yml'), 
+				{
+					apptitle	: appTitle, 
+					artifact 	: artifactName, 
+					packageroot	: packageRoot, 
+					swagger 	: swagger, 
+					redis 		: redis, 
+					rabbit 		: rabbit
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('bootstrap.yml'),
+				this.destinationPath('bootstrap.yml'), 
+				{
+					artifact 	: artifactName
+				}
+			);
+			
+			// i18n
+			this.destinationRoot('./i18n');
+			
+			// java
+			this.destinationRoot('../../java');
 			this.destinationRoot(packagePath);
-			var strApp = answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
 			this.fs.copyTpl(
 				this.templatePath('ApiApplication.java'),
-				this.destinationPath(strApp + '.java'), 
+				this.destinationPath(appName + '.java'), 
 				{
-					appname	: strApp, 
-					group	: answers.group
+					appname		: appName, 
+					group		: packageRoot
+				}
+			);
+			
+			// java::config
+			this.destinationRoot('./config');
+			if (redis) {
+				this.fs.copyTpl(
+					this.templatePath('CacheConfig.java'), 
+					this.destinationPath('CacheConfig.java'), 
+					{
+						packageConfig: packageConfig
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('CacheKeyGenerator.java'), 
+					this.destinationPath('CacheKeyGenerator.java'), 
+					{
+						packageConfig: packageConfig
+					}
+				);
+			}
+			if (swagger) {
+				this.fs.copyTpl(
+					this.templatePath('SwaggerConfig.java'), 
+					this.destinationPath('SwaggerConfig.java'), 
+					{
+						packageConfig: packageConfig
+					}
+				);
+			}
+
+			// java::service
+			this.destinationRoot('../service');
+			this.fs.copyTpl(
+				this.templatePath('ApiBaseService.java'), 
+				this.destinationPath('ApiBaseService.java'), 
+				{
+					packageService	: packageService, 
+					redis			: redis, 
+					rabbit 			: rabbit
+				}
+			);
+			
+			// java::endpoint
+			this.destinationRoot('../endpoint');
+			this.fs.copyTpl(
+				this.templatePath('ApiBaseEndpoint.java'), 
+				this.destinationPath('ApiBaseEndpoint.java'), 
+				{
+					packageEndpoint	: packageEndpoint, 
+					redis			: redis
 				}
 			);
 		});

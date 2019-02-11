@@ -14,7 +14,7 @@
 	
 	<groupId><%= group %></groupId>
 	<artifactId><%= artifact %></artifactId>
-	<name><%= appname %></name>
+	<name><%= apptitle %></name>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -33,16 +33,14 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<% if (container != 'tomcat') { %>
-			<exclusions>
+			<% if (container != 'tomcat') { %><exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
 			</exclusions><% } %>
 		</dependency>
-		<% if (container != 'tomcat') { %>
-		<dependency>
+		<% if (container != 'tomcat') { %><dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-<%= container %></artifactId>
 		</dependency><% } %>
@@ -52,6 +50,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
+		</dependency>
+		<% } if (redis) { %>
+		<!-- redis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency><% } %>
 		
 		<!-- lombok -->
@@ -60,7 +64,7 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+		<% if (swagger) { %>
 		<!-- swagger -->
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -71,7 +75,7 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${springfox.version}</version>
-		</dependency>
+		</dependency><% } %>
 
 	</dependencies>
 	

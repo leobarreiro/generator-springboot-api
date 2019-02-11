@@ -1,19 +1,34 @@
 logging:
   level:
-    <%= groupId %>: INFO
+    <%= packageroot %>: INFO
     org.springframework.boot.context: INFO
 server:
   compression:
     enabled: true
-  context-path: <%= artifactId %>/
-  port: ${SERVER_PORT:8080}
-springfox:
+  context-path: /<%= artifact %>
+  port: 8080
+<%if (swagger) { %>springfox:
   documentation:
     swagger.v2.path: /v2/api-docs
     info:
       title: 
-      description: <%= titleApplication %>.
+      description: <%= apptitle %> Docs.
       version: 1.0
-    base-package: <%= groupId %>
+    base-package: <%= packageroot %><% } %>
 management:
   port: 9090
+spring:
+  messages:
+    basename: i18n/messages
+<% if (redis) { %>  cache:
+    type: redis<% } %>
+<% if (rabbit) { %>  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbit
+    password: rabbit@123
+    virtual-host: vhrabbit
+    queue: rabbit-queue
+    deadQueue: rabbit-dead-queue
+    exchange: rabbit-exchange
+    connection-timeout: 9000<% } %>
