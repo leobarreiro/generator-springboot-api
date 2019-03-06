@@ -5,8 +5,9 @@ logging:
 server:
   compression:
     enabled: true
-  context-path: /<%= artifact %>
   port: 8080
+  servlet: 
+    context-path: /<%= artifact %>
 <%if (swagger) { %>springfox:
   documentation:
     swagger.v2.path: /v2/api-docs

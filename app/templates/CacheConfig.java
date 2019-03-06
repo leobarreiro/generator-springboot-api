@@ -17,23 +17,23 @@ import org.springframework.data.redis.core.RedisTemplate;
 @Configuration
 public class CacheConfig extends CachingConfigurerSupport {
 
-	@Autowired
-	private RedisTemplate<?, ?> redisTemplate;
-
 	@Bean
-	@Override
-	public CacheManager cacheManager() {
-		final RedisCacheManager manager = new RedisCacheManager(redisTemplate);
-		manager.setUsePrefix(true);
-		manager.setDefaultExpiration(90L);
-		Map<String, Long> mapExpires = new HashMap<>();
-		mapExpires.put("hello-world", 60L);
-		/* Create the entries to your cache set, as below:
-		 * mapExpires.put("cache-group-1", 60L);
-		 * mapExpires.put("cache-group-2", 300L); 
-		 */
-		manager.setExpires(mapExpires);
-		return manager;
+	public RedisCacheManager redisCacheManager(LettuceConnectionFactory lettuceConnectionFactory) {
+
+		RedisCacheConfiguration confDefaults = RedisCacheConfiguration.defaultCacheConfig().disableCachingNullValues()
+				.entryTtl(Duration.ofSeconds(60)).serializeValuesWith(
+						RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));
+
+		RedisCacheConfiguration confDateNow = RedisCacheConfiguration.defaultCacheConfig().disableCachingNullValues()
+				.entryTtl(Duration.ofHours(1)).serializeValuesWith(
+						RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));
+		confDateNow.usePrefix();
+
+		Map<String, RedisCacheConfiguration> cacheMapConf = new HashMap<>();
+		cacheMapConf.put("date-now", confDateNow);
+
+		return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(lettuceConnectionFactory)
+				.cacheDefaults(confDefaults).withInitialCacheConfigurations(cacheMapConf).build();
 	}
 
 	@Bean

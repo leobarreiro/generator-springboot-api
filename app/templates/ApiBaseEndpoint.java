@@ -17,4 +17,10 @@ public class ApiBaseEndpoint {
 		return new ResponseEntity<>(service.hello(), HttpStatus.OK);
 	}
 
+	@GetMapping(path = "/date-now")
+	@ResponseBody
+	public String localDateNow() {
+		return service.localDate();
+	}
+
 }

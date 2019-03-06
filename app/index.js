@@ -177,7 +177,7 @@ module.exports = class extends Generator {
 				this.destinationPath('ApiBaseEndpoint.java'), 
 				{
 					packageEndpoint	: packageEndpoint, 
-					redis			: redis
+					packageService	: packageService
 				}
 			);
 		});
