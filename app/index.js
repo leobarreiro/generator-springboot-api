@@ -62,18 +62,18 @@ module.exports = class extends Generator {
 				]
 			}
 		]).then((answers) => {
-			var redis = answers.options.includes('redis');
-			var rabbit = answers.options.includes('rabbit');
-			var swagger = answers.options.includes('swagger');
-			var devtools = answers.options.includes('devtools');
-			var packageRoot = answers.group;
-			var artifactName = answers.artifact;
-			var packageConfig = packageRoot + '.config';
-			var packageService = packageRoot + '.service';
+			var redis 			= answers.options.includes('redis');
+			var rabbit 			= answers.options.includes('rabbit');
+			var swagger 		= answers.options.includes('swagger');
+			var devtools 		= answers.options.includes('devtools');
+			var packageRoot 	= answers.group;
+			var artifactName 	= answers.artifact;
+			var packageConfig 	= packageRoot + '.config';
+			var packageService 	= packageRoot + '.service';
 			var packageEndpoint = packageRoot + '.endpoint';
-			var packagePath = answers.group.split('.').join('/');
-			var appTitle = answers.appname;
-			var appName = answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
+			var packagePath 	= answers.group.split('.').join('/');
+			var appTitle 		= answers.appname;
+			var appName 		= answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
 			
 			// root files
 			this.destinationRoot(answers.artifact);
@@ -89,7 +89,8 @@ module.exports = class extends Generator {
 					apptitle	: appTitle, 
 					swagger 	: swagger, 
 					devtools 	: devtools, 
-					redis 		: redis
+					redis 		: redis, 
+					rabbit 		: rabbit
 				}
 			);
 			
