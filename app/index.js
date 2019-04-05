@@ -30,8 +30,8 @@ module.exports = class extends Generator {
 			{
 				type    : 'input',
 				name    : 'artifact', 
-				default : 'springest', 
-				message : 'Enter a name for the artifactId [springest]: '
+				default : 'springfast', 
+				message : 'Enter a name for the artifactId [springfast]: '
 			}, 
 			{
 				type 	: 'input', 
@@ -71,6 +71,7 @@ module.exports = class extends Generator {
 			var packageConfig 	= packageRoot + '.config';
 			var packageService 	= packageRoot + '.service';
 			var packageEndpoint = packageRoot + '.endpoint';
+			var packageRabbit  	= packageRoot + '.rabbit';
 			var packagePath 	= answers.group.split('.').join('/');
 			var appTitle 		= answers.appname;
 			var appName 		= answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
@@ -93,7 +94,7 @@ module.exports = class extends Generator {
 					rabbit 		: rabbit
 				}
 			);
-			
+
 			// resources
 			this.destinationRoot('src/main/resources');
 			this.fs.copyTpl(
@@ -158,6 +159,44 @@ module.exports = class extends Generator {
 					}
 				);
 			}
+			if (rabbit) {
+				this.fs.copyTpl(
+					this.templatePath('RabbitConfig.java'), 
+					this.destinationPath('RabbitConfig.java'), 
+					{
+						packageConfig: packageConfig
+					}
+				);
+				this.destinationRoot('../rabbit');
+				this.fs.copyTpl(
+					this.templatePath('RabbitConverter.java'), 
+					this.destinationPath('RabbitConverter.java'), 
+					{
+						packageRabbit	: packageRabbit
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('RabbitMessageListener.java'), 
+					this.destinationPath('RabbitMessageListener.java'), 
+					{
+						packageRabbit	: packageRabbit
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('RabbitSamplePojo.java'), 
+					this.destinationPath('RabbitSamplePojo.java'), 
+					{
+						packageRabbit	: packageRabbit
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('RabbitSender.java'), 
+					this.destinationPath('RabbitSender.java'), 
+					{
+						packageRabbit	: packageRabbit
+					}
+				);
+			}
 
 			// java::service
 			this.destinationRoot('../service');
@@ -166,6 +205,7 @@ module.exports = class extends Generator {
 				this.destinationPath('ApiBaseService.java'), 
 				{
 					packageService	: packageService, 
+					packageRabbit	: packageRabbit, 
 					redis			: redis, 
 					rabbit 			: rabbit
 				}
@@ -178,7 +218,8 @@ module.exports = class extends Generator {
 				this.destinationPath('ApiBaseEndpoint.java'), 
 				{
 					packageEndpoint	: packageEndpoint, 
-					packageService	: packageService
+					packageService	: packageService, 
+					rabbit 			: rabbit
 				}
 			);
 		});
