@@ -26,10 +26,10 @@ spring:
 <% if (rabbit) { %>  rabbitmq:
     host: localhost
     port: 5672
-    username: rabbit
-    password: rabbit@123
-    virtual-host: vhrabbit
-    queue: rabbit-queue
-    deadQueue: rabbit-dead-queue
+    username: guest
+    password: guest
+    virtual-host: /
+    writeQueue: rabbit-queue
+    readQueue: rabbit-dead-queue
     exchange: rabbit-exchange
     connection-timeout: 9000<% } %>

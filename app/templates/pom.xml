@@ -2,22 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
-	
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.1.1.RELEASE</version>
 		<relativePath />
 	</parent>
-	
 	<groupId><%= group %></groupId>
 	<artifactId><%= artifact %></artifactId>
 	<name><%= apptitle %></name>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-
 	<properties>
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,51 +22,41 @@
 		<commons.lang.version>3.7</commons.lang.version>
 		<springfox.version>2.8.0</springfox.version>
 	</properties>
-	
 	<dependencies>
-
-		<!-- server -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<% if (container != 'tomcat') { %><exclusions>
+			<% if (container != 'tomcat') { %>
+			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
-			</exclusions><% } %>
+			</exclusions>
+			<% } %>
 		</dependency>
-		<% if (container != 'tomcat') { %><dependency>
+		<% if (container != 'tomcat') { %>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-<%= container %></artifactId>
-		</dependency><% } %>
-		<% if (devtools) { %>
-		<!-- devtools -->
+		</dependency>
+		<% } if (devtools) { %>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
 		<% } if (redis) { %>
-		<!-- redis -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency><% } %>
+		</dependency>
 		<% } if (rabbit) { %>
-		<!-- rabbit -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency><% } %>
-		<!-- lombok -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
 		</dependency>
-		<% if (swagger) { %>
-		<!-- swagger -->
+		<% } if (swagger) { %>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
@@ -80,29 +66,26 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${springfox.version}</version>
-		</dependency><% } %>
-
+		</dependency>
+		<% } %>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
-	
 	<build>
 		<plugins>
-
-			<!-- maven source/javadoc -->
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
 			</plugin>
-
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
-
-			<!-- spring boot -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-
 		</plugins>
 	</build>
-	
 </project>
