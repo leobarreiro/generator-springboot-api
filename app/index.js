@@ -55,26 +55,46 @@ module.exports = class extends Generator {
 					{name: 'Git Repo', value: 'git'}, 
 					{name: 'Devtools', value: 'devtools'}, 
 					{name: 'Swagger Docs', value: 'swagger'}, 
-					{name: 'Redis Cache', value: 'redis'}, 
-					{name: 'RabbitMQ', value: 'rabbit'}, 
-					{name: 'Postgres', value: 'postgres'}, 
-					{name: 'MongoDB', value: 'mongodb'}
+					{name: 'Redis Cache', value: 'cache-redis'}, 
+					{name: 'RabbitMQ', value: 'amqp-rabbit'}, 
+					{name: 'InfluxDB Datasource', value: 'dtsource-influx'}, 
+					{name: 'MongoDB', value: 'dtsource-mongo'}, 
+					{name: 'Spring Actuator', value: 'actuator'}, 
+					{name: 'Metrics InfluxDB', value: 'metrics-influx'} 
 				]
+			}, 
+			{
+				type	: 'rawlist', 
+				name	: 'database', 
+				default : 'none', 
+				message : 'Please pick a database [1 = none]: ', 
+				choices : ['none', 'postgres', 'mysql']
 			}
 		]).then((answers) => {
-			var redis 			= answers.options.includes('redis');
-			var rabbit 			= answers.options.includes('rabbit');
-			var swagger 		= answers.options.includes('swagger');
-			var devtools 		= answers.options.includes('devtools');
-			var packageRoot 	= answers.group;
-			var artifactName 	= answers.artifact;
-			var packageConfig 	= packageRoot + '.config';
-			var packageService 	= packageRoot + '.service';
-			var packageEndpoint = packageRoot + '.endpoint';
-			var packageRabbit  	= packageRoot + '.rabbit';
-			var packagePath 	= answers.group.split('.').join('/');
-			var appTitle 		= answers.appname;
-			var appName 		= answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
+			var redis 				= answers.options.includes('cache-redis');
+			var rabbit	 			= answers.options.includes('amqp-rabbit');
+			var swagger 			= answers.options.includes('swagger');
+			var devtools 			= answers.options.includes('devtools');
+			var actuator	 	 	= answers.options.includes('actuator');
+			var metricsinflux 		= answers.options.includes('metrics-influx');
+			var dtsourceinflux 		= answers.options.includes('dtsource-influx');
+			var postgres 			= answers.database == 'postgres';
+			var mysql 				= answers.database == 'mysql';
+			var jpa 				= (postgres || mysql);
+			var databaseUpper 		= answers.database.toUpperCase;
+			var databaseDialect 	= (answers.database == 'postgres') ? 'PostgreSQL9Dialect' : 'MysqlDialect';
+			var dtsourcemongo	 	= answers.options.includes('dtsource-mongo');
+			var packageRoot 		= answers.group;
+			var artifactName 		= answers.artifact;
+			var packageConfig 		= packageRoot + '.config';
+			var packageService 		= packageRoot + '.service';
+			var packageEndpoint 	= packageRoot + '.endpoint';
+			var packageRabbit  		= packageRoot + '.rabbit';
+			var packageDomain  		= packageRoot + '.domain';
+			var packageRepository 	= packageRoot + '.repository';
+			var packagePath 		= answers.group.split('.').join('/');
+			var appTitle 			= answers.appname;
+			var appName 			= answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
 			
 			// root files
 			this.destinationRoot(answers.artifact);
@@ -84,14 +104,20 @@ module.exports = class extends Generator {
 				this.templatePath('pom.xml'),
 				this.destinationPath('pom.xml'), 
 				{
-					artifact	: artifactName, 
-					group		: packageRoot, 
-					container	: answers.container, 
-					apptitle	: appTitle, 
-					swagger 	: swagger, 
-					devtools 	: devtools, 
-					redis 		: redis, 
-					rabbit 		: rabbit
+					artifact			: artifactName, 
+					group				: packageRoot, 
+					container			: answers.container, 
+					apptitle			: appTitle, 
+					swagger 			: swagger, 
+					devtools 			: devtools, 
+					actuator 			: actuator, 
+					metricsinflux 		: metricsinflux, 
+					dtsourceinflux 		: dtsourceinflux, 
+					dtsourcemongo 		: dtsourcemongo, 
+					postgres			: postgres, 
+					mysql 				: mysql, 
+					redis 				: redis, 
+					rabbit 				: rabbit
 				}
 			);
 
@@ -101,12 +127,19 @@ module.exports = class extends Generator {
 				this.templatePath('application.yml'),
 				this.destinationPath('application.yml'), 
 				{
-					apptitle	: appTitle, 
-					artifact 	: artifactName, 
-					packageroot	: packageRoot, 
-					swagger 	: swagger, 
-					redis 		: redis, 
-					rabbit 		: rabbit
+					apptitle		: appTitle, 
+					artifact 		: artifactName, 
+					packageroot		: packageRoot, 
+					swagger 		: swagger, 
+					actuator 		: actuator, 
+					metricsinflux 	: metricsinflux, 
+					dtsourceinflux 	: dtsourceinflux, 
+					redis 			: redis, 
+					rabbit 			: rabbit, 
+					postgres		: postgres, 
+					mysql 			: mysql, 
+					databaseUpper 	: databaseUpper, 
+					databaseDialect : databaseDialect 
 				}
 			);
 			this.fs.copyTpl(
@@ -147,6 +180,17 @@ module.exports = class extends Generator {
 					this.destinationPath('CacheKeyGenerator.java'), 
 					{
 						packageConfig: packageConfig
+					}
+				);
+			}
+			if (postgres || mysql) {
+				this.fs.copyTpl(
+					this.templatePath('JpaConfig.java'), 
+					this.destinationPath('JpaConfig.java'), 
+					{
+						packageConfig		: packageConfig, 
+						packageRepository	: packageRepository, 
+						packageDomain		: packageDomain
 					}
 				);
 			}
@@ -198,18 +242,52 @@ module.exports = class extends Generator {
 				);
 			}
 
+			// java::data
+			if (postgres || mysql) {
+				this.destinationRoot('../domain');
+				this.fs.copyTpl(
+					this.templatePath('Registry.java'), 
+					this.destinationPath('Registry.java'), 
+					{
+						packageDomain: packageDomain
+					}
+				);
+				this.destinationRoot('../repository');
+				this.fs.copyTpl(
+					this.templatePath('RegistryRepository.java'), 
+					this.destinationPath('RegistryRepository.java'), 
+					{
+						packageRepository	: packageRepository, 
+						packageDomain		: packageDomain
+					}
+				);
+			}
+
 			// java::service
 			this.destinationRoot('../service');
 			this.fs.copyTpl(
 				this.templatePath('ApiBaseService.java'), 
 				this.destinationPath('ApiBaseService.java'), 
 				{
-					packageService	: packageService, 
-					packageRabbit	: packageRabbit, 
-					redis			: redis, 
-					rabbit 			: rabbit
+					packageService		: packageService, 
+					packageRabbit		: packageRabbit, 
+					packageRepository	: packageRepository, 
+					packageDomain		: packageDomain, 
+					redis				: redis, 
+					rabbit 				: rabbit
 				}
 			);
+			if (postgres || mysql) {
+				this.fs.copyTpl(
+					this.templatePath('RegistryService.java'), 
+					this.destinationPath('RegistryService.java'), 
+					{
+						packageService		: packageService, 
+						packageRepository	: packageRepository, 
+						packageDomain		: packageDomain
+					}
+				);
+			}
 			
 			// java::endpoint
 			this.destinationRoot('../endpoint');

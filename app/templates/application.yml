@@ -16,8 +16,18 @@ server:
       description: <%= apptitle %> Docs.
       version: 1.0
     base-package: <%= packageroot %><% } %>
-management:
-  port: 9090
+<% if (actuator || metricsinflux) { %>management:
+  server:
+    port: 9090
+  endpoints:
+    web:
+      exposure:
+        include: '*'<% } %>
+<% if (metricsinflux) { %>  metrics:
+    export:
+      influx:
+        db: <%= artifact %>
+        uri: http://localhost:8086<% } %>
 spring:
   messages:
     basename: i18n/messages
@@ -33,3 +43,22 @@ spring:
     readQueue: rabbit-dead-queue
     exchange: rabbit-exchange
     connection-timeout: 9000<% } %>
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: postgres
+    password: postgresdb@123
+    continue-on-error: true
+<% if (postgres || mysql) { %>}  jpa:
+    database: <%=databaseUpper%>
+    database-platform: org.hibernate.dialect.<%=databaseDialect%>
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true<% } %>
+datasources: 
+<% if (dtsourceinflux) { %>  influxdb: 
+    url: 
+    username:  
+    password: <% } %>

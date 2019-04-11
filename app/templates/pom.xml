@@ -26,38 +26,31 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<% if (container != 'tomcat') { %>
-			<exclusions>
+			<% if (container != 'tomcat') { %><exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
-			</exclusions>
-			<% } %>
+			</exclusions><% } %>
 		</dependency>
-		<% if (container != 'tomcat') { %>
-		<dependency>
+		<% if (container != 'tomcat') { %><dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-<%= container %></artifactId>
 		</dependency>
-		<% } if (devtools) { %>
-		<dependency>
+		<% } if (devtools) { %><dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
-		<% } if (redis) { %>
-		<dependency>
+		<% } if (redis) { %><dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
-		<% } if (rabbit) { %>
-		<dependency>
+		<% } if (rabbit) { %><dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
-		<% } if (swagger) { %>
-		<dependency>
+		<% } if (swagger) { %><dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${springfox.version}</version>
@@ -67,7 +60,18 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${springfox.version}</version>
 		</dependency>
-		<% } %>
+		<% } if (actuator || metricsinflux) { %><dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<% } if (metricsinflux) { %><dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-influx</artifactId>
+		</dependency><% } %>
+		<% if (metricsinflux || dtsourceinflux) { %><dependency>
+			<groupId>org.influxdb</groupId>
+			<artifactId>influxdb-java</artifactId>
+		</dependency><% } %>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
