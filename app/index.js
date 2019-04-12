@@ -30,8 +30,8 @@ module.exports = class extends Generator {
 			{
 				type    : 'input',
 				name    : 'artifact', 
-				default : 'springfast', 
-				message : 'Enter a name for the artifactId [springfast]: '
+				default : 'springfield', 
+				message : 'Enter a name for the artifactId [springfield]: '
 			}, 
 			{
 				type 	: 'input', 
@@ -57,8 +57,6 @@ module.exports = class extends Generator {
 					{name: 'Swagger Docs', value: 'swagger'}, 
 					{name: 'Redis Cache', value: 'cache-redis'}, 
 					{name: 'RabbitMQ', value: 'amqp-rabbit'}, 
-					{name: 'InfluxDB Datasource', value: 'dtsource-influx'}, 
-					{name: 'MongoDB', value: 'dtsource-mongo'}, 
 					{name: 'Spring Actuator', value: 'actuator'}, 
 					{name: 'Metrics InfluxDB', value: 'metrics-influx'} 
 				]
@@ -68,7 +66,7 @@ module.exports = class extends Generator {
 				name	: 'database', 
 				default : 'none', 
 				message : 'Please pick a database [1 = none]: ', 
-				choices : ['none', 'postgres', 'mysql']
+				choices : ['none', 'postgres']
 			}
 		]).then((answers) => {
 			var redis 				= answers.options.includes('cache-redis');
@@ -79,11 +77,9 @@ module.exports = class extends Generator {
 			var metricsinflux 		= answers.options.includes('metrics-influx');
 			var dtsourceinflux 		= answers.options.includes('dtsource-influx');
 			var postgres 			= answers.database == 'postgres';
-			var mysql 				= answers.database == 'mysql';
-			var jpa 				= (postgres || mysql);
+			var jpa 				= postgres;
 			var databaseUpper 		= "" + answers.database + "".toUpperCase();
 			var databaseDialect 	= (answers.database == 'postgres') ? 'PostgreSQL9Dialect' : 'MysqlDialect';
-			var dtsourcemongo	 	= answers.options.includes('dtsource-mongo');
 			var packageRoot 		= answers.group;
 			var artifactName 		= answers.artifact;
 			var packageConfig 		= packageRoot + '.config';
@@ -112,18 +108,55 @@ module.exports = class extends Generator {
 					devtools 			: devtools, 
 					actuator 			: actuator, 
 					metricsinflux 		: metricsinflux, 
-					dtsourceinflux 		: dtsourceinflux, 
-					dtsourcemongo 		: dtsourcemongo, 
 					jpa 				: jpa, 
 					postgres			: postgres, 
-					mysql 				: mysql, 
+					redis 				: redis, 
+					rabbit 				: rabbit
+				}
+			);
+			this.destinationRoot('src/docker');
+			this.fs.copyTpl(
+				this.templatePath('docker/README-DOCKER-STACK.md'),
+				this.destinationPath('README-DOCKER-STACK.md'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					swagger 			: swagger, 
+					metricsinflux 		: metricsinflux, 
+					postgres			: postgres, 
+					redis 				: redis, 
+					rabbit 				: rabbit
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('docker/Dockerfile'),
+				this.destinationPath('Dockerfile'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					swagger 			: swagger, 
+					metricsinflux 		: metricsinflux, 
+					postgres			: postgres, 
+					redis 				: redis, 
+					rabbit 				: rabbit
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('docker/docker-compose.yml'),
+				this.destinationPath('docker-compose.yml'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					swagger 			: swagger, 
+					metricsinflux 		: metricsinflux, 
+					postgres			: postgres, 
 					redis 				: redis, 
 					rabbit 				: rabbit
 				}
 			);
 
 			// resources
-			this.destinationRoot('src/main/resources');
+			this.destinationRoot('../main/resources');
 			this.fs.copyTpl(
 				this.templatePath('application.yml'),
 				this.destinationPath('application.yml'), 
@@ -134,11 +167,9 @@ module.exports = class extends Generator {
 					swagger 		: swagger, 
 					actuator 		: actuator, 
 					metricsinflux 	: metricsinflux, 
-					dtsourceinflux 	: dtsourceinflux, 
 					redis 			: redis, 
 					rabbit 			: rabbit, 
 					postgres		: postgres, 
-					mysql 			: mysql, 
 					databaseUpper 	: databaseUpper, 
 					databaseDialect : databaseDialect 
 				}

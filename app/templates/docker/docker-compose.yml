@@ -1,0 +1,96 @@
+version: "3.7"
+services:
+  app:
+    image: @project.artifactId@:@project.version@
+    ports: 
+      - 8080:8080
+      - 9090:9090
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+        reservations:
+          cpus: '0.20'
+          memory: 128M
+      mode: replicated
+      replicas: 2
+    depends_on:
+      - influxdb
+      - postgres
+      - redis
+    networks:
+      - backend
+      - frontend
+    links:
+      - influxdb:influxdb
+      - postgres:postgres
+      - redis:redis
+  influxdb:
+    image: influxdb:1.7.5-alpine
+    ports: 
+      - 8086:8086
+      - 8083:8083
+    networks:
+      - backend
+    volumes:
+      - influxdbdata:/var/lib/influxdb
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+        reservations:
+          cpus: '0.20'
+          memory: 128M
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+  postgres:
+    image: postgres:11.2-alpine
+    ports: 
+      - 5432:5432
+    networks:
+      - backend
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+    environment:
+      - "POSTGRES_PASSWORD=pgdb<%=artifact%>@123"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+        reservations:
+          cpus: '0.20'
+          memory: 128M
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+  redis:
+    image: redis:5.0.4-alpine
+    ports: 
+      - 6379:6379
+    networks:
+      - backend
+    volumes:
+      - redisdata:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+        reservations:
+          cpus: '0.20'
+          memory: 128M
+      mode: replicated
+      replicas: 1
+networks:
+  backend:
+  frontend:
+volumes:
+  postgresdata:
+  influxdbdata:
+  redisdata:

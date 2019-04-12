@@ -26,15 +26,15 @@ server:
 <% if (metricsinflux) { %>  metrics:
     export:
       influx:
-        db: <%= artifact %>
-        uri: http://localhost:8086<% } %>
+        db: <%=artifact%>
+        uri: http://<%=artifact%>_influxdb:8086<% } %>
 spring:
   messages:
     basename: i18n/messages
 <% if (redis) { %>  cache:
     type: redis<% } %>
 <% if (rabbit) { %>  rabbitmq:
-    host: localhost
+    host: <%=artifact%>_rabbitmq
     port: 5672
     username: guest
     password: guest
@@ -43,22 +43,17 @@ spring:
     readQueue: rabbit-dead-queue
     exchange: rabbit-exchange
     connection-timeout: 9000<% } %>
-  datasource:
-    platform: postgres
-    url: jdbc:postgresql://localhost:5433/postgres
+<% if (postgres) { %>  datasource:
+    platform: postgresql
+    url: jdbc:postgresql://<%=artifact%>_postgres:5432/postgres
     username: postgres
-    password: postgresdb@123
+    password: pgdb<%=artifact%>@123
     continue-on-error: true
-<% if (postgres || mysql) { %>  jpa:
-    database: <%=databaseUpper%>
+  jpa:
+    database: POSTGRESQL
     database-platform: org.hibernate.dialect.<%=databaseDialect%>
     properties:
       hibernate:
         jdbc:
           lob:
             non_contextual_creation: true<% } %>
-<% if (dtsourceinflux) { %>no-sql:
-  influxdb: 
-    url: 
-    username:  
-    password: <% } %>
