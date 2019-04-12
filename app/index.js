@@ -81,7 +81,7 @@ module.exports = class extends Generator {
 			var postgres 			= answers.database == 'postgres';
 			var mysql 				= answers.database == 'mysql';
 			var jpa 				= (postgres || mysql);
-			var databaseUpper 		= answers.database.toUpperCase;
+			var databaseUpper 		= "" + answers.database + "".toUpperCase();
 			var databaseDialect 	= (answers.database == 'postgres') ? 'PostgreSQL9Dialect' : 'MysqlDialect';
 			var dtsourcemongo	 	= answers.options.includes('dtsource-mongo');
 			var packageRoot 		= answers.group;
@@ -114,6 +114,7 @@ module.exports = class extends Generator {
 					metricsinflux 		: metricsinflux, 
 					dtsourceinflux 		: dtsourceinflux, 
 					dtsourcemongo 		: dtsourcemongo, 
+					jpa 				: jpa, 
 					postgres			: postgres, 
 					mysql 				: mysql, 
 					redis 				: redis, 
@@ -243,7 +244,7 @@ module.exports = class extends Generator {
 			}
 
 			// java::data
-			if (postgres || mysql) {
+			if (jpa) {
 				this.destinationRoot('../domain');
 				this.fs.copyTpl(
 					this.templatePath('Registry.java'), 
@@ -277,7 +278,7 @@ module.exports = class extends Generator {
 					rabbit 				: rabbit
 				}
 			);
-			if (postgres || mysql) {
+			if (jpa) {
 				this.fs.copyTpl(
 					this.templatePath('RegistryService.java'), 
 					this.destinationPath('RegistryService.java'), 

@@ -1,4 +1,4 @@
-package <%=packageDomain%>>;
+package <%=packageDomain%>;
 
 import java.io.Serializable;
 import java.util.Calendar;

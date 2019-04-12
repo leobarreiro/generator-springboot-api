@@ -1,11 +1,11 @@
-package br.com.unicred.api.config;
+package <%=packageConfig%>;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import br.com.unicred.api.data.domain.Registry;
-import br.com.unicred.api.data.repository.RegistryRepository;
+import <%=packageDomain%>.Registry;
+import <%=packageRepository%>.RegistryRepository;
 
 @Configuration
 @EnableJpaRepositories(basePackageClasses = RegistryRepository.class)
