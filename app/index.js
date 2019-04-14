@@ -78,7 +78,7 @@ module.exports = class extends Generator {
 			var dtsourceinflux 		= answers.options.includes('dtsource-influx');
 			var postgres 			= answers.database == 'postgres';
 			var jpa 				= postgres;
-			var databaseUpper 		= "" + answers.database + "".toUpperCase();
+			var databaseJpa 		= (answers.database == 'postgres') ? 'POSTGRESQL' : 'MYSQL';
 			var databaseDialect 	= (answers.database == 'postgres') ? 'PostgreSQL9Dialect' : 'MysqlDialect';
 			var packageRoot 		= answers.group;
 			var artifactName 		= answers.artifact;
@@ -169,8 +169,9 @@ module.exports = class extends Generator {
 					metricsinflux 	: metricsinflux, 
 					redis 			: redis, 
 					rabbit 			: rabbit, 
+					jpa 			: jpa, 
+					databaseJpa 	: databaseJpa, 
 					postgres		: postgres, 
-					databaseUpper 	: databaseUpper, 
 					databaseDialect : databaseDialect 
 				}
 			);
@@ -215,7 +216,7 @@ module.exports = class extends Generator {
 					}
 				);
 			}
-			if (postgres || mysql) {
+			if (jpa) {
 				this.fs.copyTpl(
 					this.templatePath('JpaConfig.java'), 
 					this.destinationPath('JpaConfig.java'), 

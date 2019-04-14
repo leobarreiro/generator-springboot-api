@@ -48,9 +48,11 @@ spring:
     url: jdbc:postgresql://<%=artifact%>_postgres:5432/postgres
     username: postgres
     password: pgdb<%=artifact%>@123
-    continue-on-error: true
-  jpa:
-    database: POSTGRESQL
+    continue-on-error: true<% } %>
+<% if (jpa) { %>  jpa:
+    hibernate:
+      ddl-auto: update
+    database: <%=databaseJpa%>
     database-platform: org.hibernate.dialect.<%=databaseDialect%>
     properties:
       hibernate:
