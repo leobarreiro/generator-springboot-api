@@ -1,7 +1,7 @@
 {
   "name": "generator-springboot-api",
-  "version": "0.0.5",
-  "description": "SpringBoot Generator\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[DAPI Generator",
+  "version": "0.0.6",
+  "description": "SpringBoot REST API Generator",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,7 +12,12 @@
   },
   "keywords": [
     "yeoman-generator",
+    "spring-boot",
     "springboot",
+    "java 8",
+    "docker", 
+    "docker stack",
+    "maven",
     "javaleo.org"
   ],
   "author": "Leopoldo B Barreiro",
