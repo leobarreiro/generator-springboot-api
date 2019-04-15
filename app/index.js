@@ -66,7 +66,7 @@ module.exports = class extends Generator {
 				name	: 'database', 
 				default : 'none', 
 				message : 'Please pick a database [1 = none]: ', 
-				choices : ['none', 'postgres']
+				choices : ['none', 'postgres', 'mysql']
 			}
 		]).then((answers) => {
 			var redis 				= answers.options.includes('cache-redis');
@@ -77,7 +77,8 @@ module.exports = class extends Generator {
 			var metricsinflux 		= answers.options.includes('metrics-influx');
 			var dtsourceinflux 		= answers.options.includes('dtsource-influx');
 			var postgres 			= answers.database == 'postgres';
-			var jpa 				= postgres;
+			var mysql 				= answers.database == 'mysql';
+			var jpa 				= (postgres || mysql);
 			var databaseJpa 		= (answers.database == 'postgres') ? 'POSTGRESQL' : 'MYSQL';
 			var databaseDialect 	= (answers.database == 'postgres') ? 'PostgreSQL9Dialect' : 'MysqlDialect';
 			var packageRoot 		= answers.group;
@@ -110,6 +111,7 @@ module.exports = class extends Generator {
 					metricsinflux 		: metricsinflux, 
 					jpa 				: jpa, 
 					postgres			: postgres, 
+					mysql 				: mysql, 
 					redis 				: redis, 
 					rabbit 				: rabbit
 				}
@@ -124,6 +126,7 @@ module.exports = class extends Generator {
 					swagger 			: swagger, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
+					mysql 				: mysql, 
 					redis 				: redis, 
 					rabbit 				: rabbit
 				}
@@ -133,12 +136,7 @@ module.exports = class extends Generator {
 				this.destinationPath('Dockerfile'), 
 				{
 					artifact			: artifactName, 
-					apptitle			: appTitle, 
-					swagger 			: swagger, 
-					metricsinflux 		: metricsinflux, 
-					postgres			: postgres, 
-					redis 				: redis, 
-					rabbit 				: rabbit
+					apptitle			: appTitle 
 				}
 			);
 			this.fs.copyTpl(
@@ -150,22 +148,14 @@ module.exports = class extends Generator {
 					swagger 			: swagger, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
+					mysql 				: mysql, 
 					redis 				: redis, 
 					rabbit 				: rabbit
 				}
 			);
 			this.fs.copyTpl(
 				this.templatePath('docker/stack.sh'),
-				this.destinationPath('stack.sh'), 
-				{
-					artifact			: artifactName, 
-					apptitle			: appTitle, 
-					swagger 			: swagger, 
-					metricsinflux 		: metricsinflux, 
-					postgres			: postgres, 
-					redis 				: redis, 
-					rabbit 				: rabbit
-				}
+				this.destinationPath('stack.sh')
 			);
 			this.fs.copyTpl(
 				this.templatePath('docker/standalone.sh'),
@@ -176,6 +166,7 @@ module.exports = class extends Generator {
 					swagger 			: swagger, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
+					mysql 				: mysql, 
 					redis 				: redis, 
 					rabbit 				: rabbit
 				}
@@ -220,6 +211,7 @@ module.exports = class extends Generator {
 					jpa 			: jpa, 
 					databaseJpa 	: databaseJpa, 
 					postgres		: postgres, 
+					mysql 			: mysql, 
 					databaseDialect : databaseDialect 
 				}
 			);

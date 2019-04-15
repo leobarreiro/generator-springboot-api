@@ -14,19 +14,21 @@ services:
           cpus: '0.20'
           memory: 128M
       mode: replicated
-      replicas: 2
+      replicas: 1
     depends_on:
-      - influxdb
-      - postgres
-      - redis
+      <% if (metricsinflux) { %>- influxdb<% } %>
+      <% if (postgres) { %>- postgres<% } %>
+      <% if (mysql) { %>- mysql<% } %>
+      <% if (redis) { %>- redis<% } %>
     networks:
       - backend
       - frontend
     links:
-      - influxdb:influxdb
-      - postgres:postgres
-      - redis:redis
-  influxdb:
+      <% if (metricsinflux) { %>- influxdb:influxdb<% } %>
+      <% if (postgres) { %>- postgres:postgres<% } %>
+      <% if (mysql) { %>- mysql:mysql<% } %>
+      <% if (redis) { %>- redis:redis<% } %>
+  <% if (metricsinflux) { %>influxdb:
     image: influxdb:1.7.5-alpine
     ports: 
       - 8086:8086
@@ -46,8 +48,8 @@ services:
       mode: replicated
       replicas: 1
       placement:
-        constraints: [node.role == manager]
-  postgres:
+        constraints: [node.role == manager]<% } %>
+  <% if (postgres) { %>postgres:
     image: postgres:11.2-alpine
     ports: 
       - 5432:5432
@@ -68,8 +70,33 @@ services:
       mode: replicated
       replicas: 1
       placement:
-        constraints: [node.role == manager]
-  redis:
+        constraints: [node.role == manager]<% } %>
+  <% if (mysql) { %>mysql:
+    image: mysql:8.0.15
+    ports: 
+      - 3306:3306
+    networks:
+      - backend
+    volumes:
+      - mysqldata:/var/lib/mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=mydb<%=artifact%>@123"
+      - "MYSQL_DATABASE=<%=artifact%>"
+      - "MYSQL_USER=<%=artifact%>"
+      - "MYSQL_PASSWORD=mydb<%=artifact%>@123"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+        reservations:
+          cpus: '0.20'
+          memory: 128M
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]<% } %>
+  <% if (redis) { %>redis:
     image: redis:5.0.4-alpine
     ports: 
       - 6379:6379
@@ -86,11 +113,12 @@ services:
           cpus: '0.20'
           memory: 128M
       mode: replicated
-      replicas: 1
+      replicas: 1<% } %>
 networks:
   backend:
   frontend:
 volumes:
-  postgresdata:
-  influxdbdata:
-  redisdata:
+  <% if (postgres) { %>postgresdata:<% } %>
+  <% if (mysql) { %>mysqldata:<% } %>
+  <% if (metricsinflux) { %>influxdbdata:<% } %>
+  <% if (redis) { %>redisdata:<% } %>

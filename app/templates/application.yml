@@ -49,6 +49,12 @@ spring:
     username: postgres
     password: pgdb<%=artifact%>@123
     continue-on-error: true<% } %>
+<% if (mysql) { %>  datasource:
+    platform: mysql
+    url: jdbc:mysql://<%=artifact%>_mysql:3306/<%=artifact%>
+    username: <%=artifact%>
+    password: mydb<%=artifact%>@123
+    continue-on-error: true<% } %>
 <% if (jpa) { %>  jpa:
     hibernate:
       ddl-auto: update
