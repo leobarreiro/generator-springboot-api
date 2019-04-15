@@ -116,8 +116,8 @@ module.exports = class extends Generator {
 			);
 			this.destinationRoot('src/docker');
 			this.fs.copyTpl(
-				this.templatePath('docker/README-DOCKER-STACK.md'),
-				this.destinationPath('README-DOCKER-STACK.md'), 
+				this.templatePath('docker/README-stack.md'),
+				this.destinationPath('README-stack.md'), 
 				{
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
@@ -152,6 +152,54 @@ module.exports = class extends Generator {
 					postgres			: postgres, 
 					redis 				: redis, 
 					rabbit 				: rabbit
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('docker/stack.sh'),
+				this.destinationPath('stack.sh'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					swagger 			: swagger, 
+					metricsinflux 		: metricsinflux, 
+					postgres			: postgres, 
+					redis 				: redis, 
+					rabbit 				: rabbit
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('docker/standalone.sh'),
+				this.destinationPath('standalone.sh'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					swagger 			: swagger, 
+					metricsinflux 		: metricsinflux, 
+					postgres			: postgres, 
+					redis 				: redis, 
+					rabbit 				: rabbit
+				}
+			);
+
+			this.destinationRoot('../postman');
+			this.fs.copyTpl(
+				this.templatePath('postman/postman-collection.json'),
+				this.destinationPath(artifactName + '-postman-collection.json'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					jpa 				: jpa
+				}
+			);
+
+			this.destinationRoot('../curl');
+			this.fs.copyTpl(
+				this.templatePath('curl/curl-requests.txt'),
+				this.destinationPath(artifactName + '-curl-requests.txt'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					jpa 				: jpa
 				}
 			);
 
@@ -330,6 +378,8 @@ module.exports = class extends Generator {
 				{
 					packageEndpoint	: packageEndpoint, 
 					packageService	: packageService, 
+					packageDomain 	: packageDomain, 
+					jpa 			: jpa, 
 					rabbit 			: rabbit
 				}
 			);

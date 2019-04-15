@@ -7,7 +7,6 @@ In order to set up your application, you can use the docker stack suite. To do t
 2. run docker stack build
 
 
-
 # Build the application image #
 ```
 docker build -t @project.artifactId@:@project.version@ .

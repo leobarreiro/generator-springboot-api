@@ -1,0 +1,18 @@
+# Hello
+curl -X GET http://localhost:8080/<%=artifact%>/hello
+
+# Date-now
+curl -X GET http://localhost:8080/<%=artifact%>/date/now
+
+<% if (jpa) {%># Database Save
+curl -X POST http://localhost:8080/<%=artifact%>/registry/save -d "description=Saving a new one"
+
+# Database Update
+curl -X PUT http://localhost:8080/<%=artifact%>/registry/update/1 -d "description=Updating a registry"
+
+# Database List all
+curl -X GET http://localhost:8080/<%=artifact%>/registry/list-all
+
+# Database Delete
+curl -X DELETE http://localhost:8080/<%=artifact%>/registry/remove/1<% } %>
+

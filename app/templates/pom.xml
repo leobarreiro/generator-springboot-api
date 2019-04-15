@@ -67,8 +67,8 @@
 		<% } if (metricsinflux) { %><dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-influx</artifactId>
-		</dependency><% } %>
-		<% if (metricsinflux || dtsourceinflux) { %><dependency>
+		</dependency>
+		<dependency>
 			<groupId>org.influxdb</groupId>
 			<artifactId>influxdb-java</artifactId>
 		</dependency><% } if (jpa) { %>
@@ -118,6 +118,14 @@
 							<resources>
 								<resource>
 									<directory>src/docker</directory>
+									<filtering>true</filtering>
+								</resource>
+								<resource>
+									<directory>src/postman</directory>
+									<filtering>true</filtering>
+								</resource>
+								<resource>
+									<directory>src/curl</directory>
 									<filtering>true</filtering>
 								</resource>
 							</resources>
