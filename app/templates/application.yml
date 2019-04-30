@@ -33,6 +33,11 @@ spring:
     basename: i18n/messages
 <% if (redis) { %>  cache:
     type: redis<% } %>
+<% if (mongodb) { %>  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: springfield<% } %>
 <% if (rabbit) { %>  rabbitmq:
     host: <%=artifact%>_rabbitmq
     port: 5672

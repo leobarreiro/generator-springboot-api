@@ -54,6 +54,7 @@ $ yo springboot-api
 * jetty
 
 4. Pick other options
+* Mongo DB
 * RabbitMQ AMQP
 * Redis Cache
 * Postgres Database

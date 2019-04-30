@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+<% if (mongodb) { %>import org.javaleo.api.document.domain.Person;
+import org.javaleo.api.service.PersonService;<% } %>
+
+
 import <%=packageService%>.ApiBaseService;
 <% if (jpa) { %>import <%=packageService%>.RegistryService;
 import <%=packageDomain%>.Registry;<% } %>
@@ -23,6 +27,9 @@ public class ApiBaseEndpoint {
 	
 	@Autowired
 	private ApiBaseService service;
+
+	<% if (mongodb) { %>@Autowired
+	private PersonService personService;<% } %>
 
 	<% if (jpa) { %>@Autowired
 	private RegistryService jpaService;<% } %>
@@ -70,6 +77,31 @@ public class ApiBaseEndpoint {
 	public String deleteRegistry(@PathVariable("id") Long id) {
 		jpaService.delete(id);
 		return "Registry deleted";
+	}<% } %>
+
+	<% if (mongodb) { %>@GetMapping(path = "/persons/surname/{surname}")
+	@ResponseBody
+	public List<Person> listPersonsBySurname(@PathVariable("surname") String surname) {
+		return personService.findBySurname(surname);
+	}
+
+	@PostMapping(path = "/persons/new")
+	@ResponseBody
+	public Person savePerson(@RequestBody Person person) {
+		return personService.save(person);
+	}
+
+	@PutMapping(path = "/persons/update")
+	@ResponseBody
+	public Person updateRegistry(@RequestBody Person person) {
+		return personService.save(person);
+	}
+
+	@DeleteMapping(path = "persons/remove/{id}")
+	@ResponseBody
+	public String deleteRegistry(@PathVariable("id") String id) {
+		personService.delete(id);
+		return "Person removed";
 	}<% } %>
 
 }

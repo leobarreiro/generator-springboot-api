@@ -56,6 +56,7 @@ module.exports = class extends Generator {
 					{name: 'Devtools', value: 'devtools'}, 
 					{name: 'Swagger Docs', value: 'swagger'}, 
 					{name: 'Redis Cache', value: 'cache-redis'}, 
+					{name: 'Mongo DB', value: 'mongodb'}, 
 					{name: 'RabbitMQ', value: 'amqp-rabbit'}, 
 					{name: 'Spring Actuator', value: 'actuator'}, 
 					{name: 'Metrics InfluxDB', value: 'metrics-influx'} 
@@ -76,6 +77,7 @@ module.exports = class extends Generator {
 			var actuator	 	 	= answers.options.includes('actuator');
 			var metricsinflux 		= answers.options.includes('metrics-influx');
 			var dtsourceinflux 		= answers.options.includes('dtsource-influx');
+			var mongodb 			= answers.options.includes('mongodb');
 			var postgres 			= answers.database == 'postgres';
 			var jpa 				= postgres;
 			var databaseJpa 		= (answers.database == 'postgres') ? 'POSTGRESQL' : 'MYSQL';
@@ -105,6 +107,7 @@ module.exports = class extends Generator {
 					container			: answers.container, 
 					apptitle			: appTitle, 
 					swagger 			: swagger, 
+					mongodb 			: mongodb, 
 					devtools 			: devtools, 
 					actuator 			: actuator, 
 					metricsinflux 		: metricsinflux, 
@@ -122,6 +125,7 @@ module.exports = class extends Generator {
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
 					swagger 			: swagger, 
+					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
 					redis 				: redis, 
@@ -135,6 +139,7 @@ module.exports = class extends Generator {
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
 					swagger 			: swagger, 
+					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
 					redis 				: redis, 
@@ -148,6 +153,7 @@ module.exports = class extends Generator {
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
 					swagger 			: swagger, 
+					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
 					redis 				: redis, 
@@ -161,6 +167,7 @@ module.exports = class extends Generator {
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
 					swagger 			: swagger, 
+					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
 					redis 				: redis, 
@@ -174,6 +181,7 @@ module.exports = class extends Generator {
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
 					swagger 			: swagger, 
+					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
 					redis 				: redis, 
@@ -188,6 +196,7 @@ module.exports = class extends Generator {
 				{
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
+					mongodb 			: mongodb, 
 					jpa 				: jpa
 				}
 			);
@@ -199,6 +208,7 @@ module.exports = class extends Generator {
 				{
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
+					mongodb 			: mongodb, 
 					jpa 				: jpa
 				}
 			);
@@ -213,6 +223,7 @@ module.exports = class extends Generator {
 					artifact 		: artifactName, 
 					packageroot		: packageRoot, 
 					swagger 		: swagger, 
+					mongodb 		: mongodb, 
 					actuator 		: actuator, 
 					metricsinflux 	: metricsinflux, 
 					redis 			: redis, 
