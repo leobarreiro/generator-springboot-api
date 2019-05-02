@@ -1,4 +1,4 @@
-package <%= packageConfig %>;
+package <%=packageConfig%>;
 
 import java.time.LocalDate;
 

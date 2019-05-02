@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-<% if (mongodb) { %>import org.javaleo.api.document.domain.Person;
-import org.javaleo.api.service.PersonService;<% } %>
-
 
 import <%=packageService%>.ApiBaseService;
 <% if (jpa) { %>import <%=packageService%>.RegistryService;
 import <%=packageDomain%>.Registry;<% } %>
+
+<% if (mongodb) { %>import <%=packageDomain%>.Person;
+import <%=packageService%>.PersonService;<% } %>
 
 @RestController
 public class ApiBaseEndpoint {
@@ -58,21 +58,21 @@ public class ApiBaseEndpoint {
 		return jpaService.findAll();
 	}
 
-	@PostMapping(path = "/registry/save")
+	@PostMapping(path = "/registries/save")
 	@ResponseBody
 	public Registry saveRegistry(@PathParam("description") String description) {
 		Registry reg = jpaService.save(description);
 		return reg;
 	}
 
-	@PutMapping(path = "/registry/update/{id}")
+	@PutMapping(path = "/registries/update/{id}")
 	@ResponseBody
 	public Registry updateRegistry(@PathVariable("id") Long id, @PathParam("description") String description) {
 		Registry reg = jpaService.update(id, description);
 		return reg;
 	}
 
-	@DeleteMapping(path = "registry/remove/{id}")
+	@DeleteMapping(path = "registries/remove/{id}")
 	@ResponseBody
 	public String deleteRegistry(@PathVariable("id") Long id) {
 		jpaService.delete(id);

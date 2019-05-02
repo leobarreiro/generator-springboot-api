@@ -1,4 +1,4 @@
-package org.javaleo.api.document.domain;
+package <%=packageDomain%>;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;

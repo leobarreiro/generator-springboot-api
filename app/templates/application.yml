@@ -35,9 +35,9 @@ spring:
     type: redis<% } %>
 <% if (mongodb) { %>  data:
     mongodb:
-      host: localhost
+      host: <%=artifact%>_mongodb
       port: 27017
-      database: springfield<% } %>
+      database: <%=artifact%><% } %>
 <% if (rabbit) { %>  rabbitmq:
     host: <%=artifact%>_rabbitmq
     port: 5672

@@ -90,6 +90,9 @@ module.exports = class extends Generator {
 			var packageRabbit  		= packageRoot + '.rabbit';
 			var packageDomain  		= packageRoot + '.domain';
 			var packageRepository 	= packageRoot + '.repository';
+			var packageMongo 		= packageRoot + '.document';
+			var packageMongoDomain 	= packageRoot + '.document.domain';
+			var packageMongoRepo  	= packageRoot + '.document.repository';
 			var packagePath 		= answers.group.split('.').join('/');
 			var appTitle 			= answers.appname;
 			var appName 			= answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
@@ -261,14 +264,14 @@ module.exports = class extends Generator {
 			this.destinationRoot('./config');
 			if (redis) {
 				this.fs.copyTpl(
-					this.templatePath('CacheConfig.java'), 
+					this.templatePath('redis/CacheConfig.java'), 
 					this.destinationPath('CacheConfig.java'), 
 					{
 						packageConfig: packageConfig
 					}
 				);
 				this.fs.copyTpl(
-					this.templatePath('CacheKeyGenerator.java'), 
+					this.templatePath('redis/CacheKeyGenerator.java'), 
 					this.destinationPath('CacheKeyGenerator.java'), 
 					{
 						packageConfig: packageConfig
@@ -277,7 +280,7 @@ module.exports = class extends Generator {
 			}
 			if (jpa) {
 				this.fs.copyTpl(
-					this.templatePath('JpaConfig.java'), 
+					this.templatePath('jpa/JpaConfig.java'), 
 					this.destinationPath('JpaConfig.java'), 
 					{
 						packageConfig		: packageConfig, 
@@ -288,7 +291,7 @@ module.exports = class extends Generator {
 			}
 			if (swagger) {
 				this.fs.copyTpl(
-					this.templatePath('SwaggerConfig.java'), 
+					this.templatePath('swagger/SwaggerConfig.java'), 
 					this.destinationPath('SwaggerConfig.java'), 
 					{
 						packageConfig: packageConfig
@@ -297,7 +300,7 @@ module.exports = class extends Generator {
 			}
 			if (rabbit) {
 				this.fs.copyTpl(
-					this.templatePath('RabbitConfig.java'), 
+					this.templatePath('rabbit/RabbitConfig.java'), 
 					this.destinationPath('RabbitConfig.java'), 
 					{
 						packageConfig: packageConfig
@@ -305,28 +308,28 @@ module.exports = class extends Generator {
 				);
 				this.destinationRoot('../rabbit');
 				this.fs.copyTpl(
-					this.templatePath('RabbitConverter.java'), 
+					this.templatePath('rabbit/RabbitConverter.java'), 
 					this.destinationPath('RabbitConverter.java'), 
 					{
 						packageRabbit	: packageRabbit
 					}
 				);
 				this.fs.copyTpl(
-					this.templatePath('RabbitMessageListener.java'), 
+					this.templatePath('rabbit/RabbitMessageListener.java'), 
 					this.destinationPath('RabbitMessageListener.java'), 
 					{
 						packageRabbit	: packageRabbit
 					}
 				);
 				this.fs.copyTpl(
-					this.templatePath('RabbitSamplePojo.java'), 
+					this.templatePath('rabbit/RabbitSamplePojo.java'), 
 					this.destinationPath('RabbitSamplePojo.java'), 
 					{
 						packageRabbit	: packageRabbit
 					}
 				);
 				this.fs.copyTpl(
-					this.templatePath('RabbitSender.java'), 
+					this.templatePath('rabbit/RabbitSender.java'), 
 					this.destinationPath('RabbitSender.java'), 
 					{
 						packageRabbit	: packageRabbit
@@ -334,20 +337,43 @@ module.exports = class extends Generator {
 				);
 			}
 
-			// java::data
+			// java::domain
+			this.destinationRoot('../domain');
 			if (jpa) {
-				this.destinationRoot('../domain');
 				this.fs.copyTpl(
-					this.templatePath('Registry.java'), 
+					this.templatePath('jpa/Registry.java'), 
 					this.destinationPath('Registry.java'), 
 					{
 						packageDomain: packageDomain
 					}
 				);
-				this.destinationRoot('../repository');
+			}
+			if (mongodb) {
 				this.fs.copyTpl(
-					this.templatePath('RegistryRepository.java'), 
+					this.templatePath('mongo/Person.java'), 
+					this.destinationPath('Person.java'), 
+					{
+						packageDomain: packageDomain
+					}
+				);
+			}
+
+			// java: repository
+			this.destinationRoot('../repository');
+			if (jpa) {
+				this.fs.copyTpl(
+					this.templatePath('jpa/RegistryRepository.java'), 
 					this.destinationPath('RegistryRepository.java'), 
+					{
+						packageRepository	: packageRepository, 
+						packageDomain		: packageDomain
+					}
+				);
+			}
+			if (mongodb) {
+				this.fs.copyTpl(
+					this.templatePath('mongo/PersonRepository.java'), 
+					this.destinationPath('PersonRepository.java'), 
 					{
 						packageRepository	: packageRepository, 
 						packageDomain		: packageDomain
@@ -371,8 +397,19 @@ module.exports = class extends Generator {
 			);
 			if (jpa) {
 				this.fs.copyTpl(
-					this.templatePath('RegistryService.java'), 
+					this.templatePath('jpa/RegistryService.java'), 
 					this.destinationPath('RegistryService.java'), 
+					{
+						packageService		: packageService, 
+						packageRepository	: packageRepository, 
+						packageDomain		: packageDomain
+					}
+				);
+			}
+			if (mongodb) {
+				this.fs.copyTpl(
+					this.templatePath('mongo/PersonService.java'), 
+					this.destinationPath('PersonService.java'), 
 					{
 						packageService		: packageService, 
 						packageRepository	: packageRepository, 
@@ -391,7 +428,8 @@ module.exports = class extends Generator {
 					packageService	: packageService, 
 					packageDomain 	: packageDomain, 
 					jpa 			: jpa, 
-					rabbit 			: rabbit
+					rabbit 			: rabbit, 
+					mongodb 		: mongodb
 				}
 			);
 		});

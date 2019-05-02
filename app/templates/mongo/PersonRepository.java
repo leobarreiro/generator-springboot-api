@@ -1,8 +1,8 @@
-package org.javaleo.api.document.repository;
+package <%=packageRepository%>;
 
 import java.util.List;
 
-import org.javaleo.api.document.domain.Person;
+import <%=packageDomain%>.Person;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface PersonRepository extends MongoRepository<Person, String> {

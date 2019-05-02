@@ -1,10 +1,10 @@
-package org.javaleo.api.service;
+package <%=packageService%>;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.javaleo.api.document.domain.Person;
-import org.javaleo.api.document.repository.PersonRepository;
+import <%=packageDomain%>.Person;
+import <%=packageRepository%>.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
