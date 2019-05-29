@@ -58,6 +58,7 @@ module.exports = class extends Generator {
 					{name: 'Redis Cache', value: 'cache-redis'}, 
 					{name: 'Mongo DB', value: 'mongodb'}, 
 					{name: 'RabbitMQ', value: 'amqp-rabbit'}, 
+					{name: 'Apache Kafka', value: 'kafka'}, 
 					{name: 'Spring Actuator', value: 'actuator'}, 
 					{name: 'Metrics InfluxDB', value: 'metrics-influx'} 
 				]
@@ -72,6 +73,9 @@ module.exports = class extends Generator {
 		]).then((answers) => {
 			var redis 				= answers.options.includes('cache-redis');
 			var rabbit	 			= answers.options.includes('amqp-rabbit');
+			var kafka 				= answers.options.includes('kafka');
+			var kafkaTopic 			= answers.artifact.replace(/\w\S*/g, function(txt){ return txt.toLowerCase(); });
+			var kafkaGroupId 		= 'group_id';
 			var swagger 			= answers.options.includes('swagger');
 			var devtools 			= answers.options.includes('devtools');
 			var actuator	 	 	= answers.options.includes('actuator');
@@ -88,6 +92,7 @@ module.exports = class extends Generator {
 			var packageService 		= packageRoot + '.service';
 			var packageEndpoint 	= packageRoot + '.endpoint';
 			var packageRabbit  		= packageRoot + '.rabbit';
+			var packageKafka 		= packageRoot + '.kafka';
 			var packageDomain  		= packageRoot + '.domain';
 			var packageRepository 	= packageRoot + '.repository';
 			var packageMongo 		= packageRoot + '.document';
@@ -117,7 +122,8 @@ module.exports = class extends Generator {
 					jpa 				: jpa, 
 					postgres			: postgres, 
 					redis 				: redis, 
-					rabbit 				: rabbit
+					rabbit 				: rabbit, 
+					kafka 				: kafka
 				}
 			);
 			this.destinationRoot('src/docker');
@@ -132,7 +138,8 @@ module.exports = class extends Generator {
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
 					redis 				: redis, 
-					rabbit 				: rabbit
+					rabbit 				: rabbit, 
+					kafka 				: kafka
 				}
 			);
 			this.fs.copyTpl(
@@ -146,7 +153,8 @@ module.exports = class extends Generator {
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
 					redis 				: redis, 
-					rabbit 				: rabbit
+					rabbit 				: rabbit, 
+					kafka				: kafka
 				}
 			);
 			this.fs.copyTpl(
@@ -160,7 +168,8 @@ module.exports = class extends Generator {
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
 					redis 				: redis, 
-					rabbit 				: rabbit
+					rabbit 				: rabbit, 
+					kafka 				: kafka
 				}
 			);
 			this.fs.copyTpl(
@@ -174,7 +183,8 @@ module.exports = class extends Generator {
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
 					redis 				: redis, 
-					rabbit 				: rabbit
+					rabbit 				: rabbit, 
+					kafka				: kafka
 				}
 			);
 			this.fs.copyTpl(
@@ -188,7 +198,8 @@ module.exports = class extends Generator {
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
 					redis 				: redis, 
-					rabbit 				: rabbit
+					rabbit 				: rabbit, 
+					kafka				: kafka
 				}
 			);
 
@@ -200,6 +211,7 @@ module.exports = class extends Generator {
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
 					mongodb 			: mongodb, 
+					kafka 				: kafka, 
 					jpa 				: jpa
 				}
 			);
@@ -212,6 +224,7 @@ module.exports = class extends Generator {
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
 					mongodb 			: mongodb, 
+					kafka 				: kafka, 
 					jpa 				: jpa
 				}
 			);
@@ -231,6 +244,9 @@ module.exports = class extends Generator {
 					metricsinflux 	: metricsinflux, 
 					redis 			: redis, 
 					rabbit 			: rabbit, 
+					kafka 			: kafka, 
+					kafkaTopic 		: kafkaTopic, 
+					kafkaGroupId 	: kafkaGroupId, 
 					jpa 			: jpa, 
 					databaseJpa 	: databaseJpa, 
 					postgres		: postgres, 
@@ -306,33 +322,13 @@ module.exports = class extends Generator {
 						packageConfig: packageConfig
 					}
 				);
-				this.destinationRoot('../rabbit');
+			}
+			if (kafka) {
 				this.fs.copyTpl(
-					this.templatePath('rabbit/RabbitConverter.java'), 
-					this.destinationPath('RabbitConverter.java'), 
+					this.templatePath('kafka/KafkaConfig.java'), 
+					this.destinationPath('KafkaConfig.java'), 
 					{
-						packageRabbit	: packageRabbit
-					}
-				);
-				this.fs.copyTpl(
-					this.templatePath('rabbit/RabbitMessageListener.java'), 
-					this.destinationPath('RabbitMessageListener.java'), 
-					{
-						packageRabbit	: packageRabbit
-					}
-				);
-				this.fs.copyTpl(
-					this.templatePath('rabbit/RabbitSamplePojo.java'), 
-					this.destinationPath('RabbitSamplePojo.java'), 
-					{
-						packageRabbit	: packageRabbit
-					}
-				);
-				this.fs.copyTpl(
-					this.templatePath('rabbit/RabbitSender.java'), 
-					this.destinationPath('RabbitSender.java'), 
-					{
-						packageRabbit	: packageRabbit
+						packageConfig: packageConfig
 					}
 				);
 			}
@@ -377,6 +373,62 @@ module.exports = class extends Generator {
 					{
 						packageRepository	: packageRepository, 
 						packageDomain		: packageDomain
+					}
+				);
+			}
+
+			// java: rabbit
+			if (redis) {
+				this.destinationRoot('../rabbit');
+				this.fs.copyTpl(
+					this.templatePath('rabbit/RabbitConverter.java'), 
+					this.destinationPath('RabbitConverter.java'), 
+					{
+						packageRabbit	: packageRabbit
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('rabbit/RabbitMessageListener.java'), 
+					this.destinationPath('RabbitMessageListener.java'), 
+					{
+						packageRabbit	: packageRabbit
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('rabbit/RabbitSamplePojo.java'), 
+					this.destinationPath('RabbitSamplePojo.java'), 
+					{
+						packageRabbit	: packageRabbit
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('rabbit/RabbitSender.java'), 
+					this.destinationPath('RabbitSender.java'), 
+					{
+						packageRabbit	: packageRabbit
+					}
+				);
+			}
+
+			// java: kafka
+			if (kafka) {
+				this.destinationRoot('../kafka');
+				this.fs.copyTpl(
+					this.templatePath('kafka/KafkaProducer.java'), 
+					this.destinationPath('KafkaProducer.java'), 
+					{
+						packageKafka	: packageKafka, 
+						kafkaTopic 		: kafkaTopic, 
+						kafkaGroupId 	: kafkaGroupId
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('kafka/KafkaConsumer.java'), 
+					this.destinationPath('KafkaConsumer.java'), 
+					{
+						packageKafka	: packageKafka, 
+						kafkaTopic 		: kafkaTopic, 
+						kafkaGroupId 	: kafkaGroupId
 					}
 				);
 			}

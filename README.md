@@ -30,12 +30,14 @@ Generation of fully-functional springboot REST API, using:
 This generator allows to integrate the springboot REST API with:
 * PostgreSQL
 * RabbitMQ
+* Apache Kafka
 * Redis-cache
 * InfluxDB for metrics
 
 ## Additionally, this generator creates:
-* Postman collection
-* Curl requests
+* A complete docker stack with all depedencies (including all the integrations above listed)
+* A Postman collection with requests configured
+* A set of curl requests
 
 # How to use
 
@@ -56,6 +58,7 @@ $ yo springboot-api
 4. Pick other options
 * Mongo DB
 * RabbitMQ AMQP
+* Apache Kafka
 * Redis Cache
 * Postgres Database
 * Spring Actuator

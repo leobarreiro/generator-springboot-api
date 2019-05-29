@@ -20,14 +20,17 @@ services:
       <% if (postgres) { %>- postgres<% } %>
       <% if (redis) { %>- redis<% } %>
       <% if (mongodb) { %>- mongodb<% } %>
+      <% if (kafka) { %>- kafka<% } %>
     networks:
       - backend
       - frontend
+      <% if (kafka) { %>- kafka-tier<% } %>
     links:
       <% if (metricsinflux) { %>- influxdb:influxdb<% } %>
       <% if (postgres) { %>- postgres:postgres<% } %>
       <% if (redis) { %>- redis:redis<% } %>
       <% if (mongodb) { %>- mongodb:mongodb<% } %>
+      <% if (kafka) { %>- kafka:kafka<% } %>
   <% if (metricsinflux) { %>influxdb:
     image: influxdb:1.7.5-alpine
     ports: 
@@ -130,9 +133,50 @@ services:
       replicas: 1
       placement:
         constraints: [node.role == manager]<% } %>
+  <% if (kafka) { %>zookeeper:
+    image: debezium/zookeeper:0.9.5.Final
+    ports: 
+      - 2181
+      - 2888
+      - 3888
+    networks:
+      - kafka-tier
+    deploy:
+      resources:
+        limits:
+          cpus: '0.20'
+          memory: 256M
+        reservations:
+          cpus: '0.10'
+          memory: 128M
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+  kafka:
+    image: debezium/kafka:0.9.5.Final
+    ports: 
+      - 9092
+    networks:
+      - kafka-tier
+    environment:
+      - "ZOOKEEPER_CONNECT=zookeeper:2181"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.20'
+          memory: 256M
+        reservations:
+          cpus: '0.10'
+          memory: 128M
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]<% } %>
 networks:
   backend:
   frontend:
+  <% if (kafka) { %>kafka-tier:<% } %>
 volumes:
     <% if (metricsinflux) { %>postgresdata:<% } %>
     <% if (postgres) { %>influxdbdata:<% } %>

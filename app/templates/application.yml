@@ -8,7 +8,7 @@ server:
   port: 8080
   servlet: 
     context-path: /<%= artifact %>
-<%if (swagger) { %>springfox:
+<% if (swagger) { %>springfox:
   documentation:
     swagger.v2.path: /v2/api-docs
     info:
@@ -64,3 +64,14 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true<% } %>
+<% if (kafka) { %>  kafka:
+    consumer:
+      bootstrap-servers: <%=artifact%>_kafka:9092
+      group-id: <%=kafkaGroupId%>
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: <%=artifact%>_kafka:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer<% } %>
