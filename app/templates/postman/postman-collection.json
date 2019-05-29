@@ -1,0 +1,173 @@
+{
+	"info": {
+		"name": "<%=artifact%>-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "registry-save",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/<%=artifact%>/registry/save?description=Saving a new Record on Database",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"springfield",
+						"registry",
+						"save"
+					],
+					"query": [
+						{
+							"key": "description",
+							"value": "Saving a new Record on Database"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registry-update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/<%=artifact%>/registry/update/1?description=Saving a record not so new",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"springfield",
+						"registry",
+						"update",
+						"1"
+					],
+					"query": [
+						{
+							"key": "description",
+							"value": "Saving a record not so new"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registry-list-all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/<%=artifact%>/registry/list-all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"springfield",
+						"registry",
+						"list-all"
+					]
+				},
+				"description": "List all the records from the database."
+			},
+			"response": []
+		},
+		{
+			"name": "registry-delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/<%=artifact%>/registry/remove/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"springfield",
+						"registry",
+						"remove",
+						"2"
+					]
+				},
+				"description": "Delete a record from database."
+			},
+			"response": []
+		},
+		{
+			"name": "hello",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/<%=artifact%>/hello",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"springfield",
+						"hello"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "date-now",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/<%=artifact%>/date/now",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"springfield",
+						"date",
+						"now"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

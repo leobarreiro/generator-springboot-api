@@ -30,8 +30,8 @@ module.exports = class extends Generator {
 			{
 				type    : 'input',
 				name    : 'artifact', 
-				default : 'springfast', 
-				message : 'Enter a name for the artifactId [springfast]: '
+				default : 'springfield', 
+				message : 'Enter a name for the artifactId [springfield]: '
 			}, 
 			{
 				type 	: 'input', 
@@ -55,26 +55,52 @@ module.exports = class extends Generator {
 					{name: 'Git Repo', value: 'git'}, 
 					{name: 'Devtools', value: 'devtools'}, 
 					{name: 'Swagger Docs', value: 'swagger'}, 
-					{name: 'Redis Cache', value: 'redis'}, 
-					{name: 'RabbitMQ', value: 'rabbit'}, 
-					{name: 'Postgres', value: 'postgres'}, 
-					{name: 'MongoDB', value: 'mongodb'}
+					{name: 'Redis Cache', value: 'cache-redis'}, 
+					{name: 'Mongo DB', value: 'mongodb'}, 
+					{name: 'RabbitMQ', value: 'amqp-rabbit'}, 
+					{name: 'Apache Kafka', value: 'kafka'}, 
+					{name: 'Spring Actuator', value: 'actuator'}, 
+					{name: 'Metrics InfluxDB', value: 'metrics-influx'} 
 				]
+			}, 
+			{
+				type	: 'rawlist', 
+				name	: 'database', 
+				default : 'none', 
+				message : 'Please pick a database [1 = none]: ', 
+				choices : ['none', 'postgres']
 			}
 		]).then((answers) => {
-			var redis 			= answers.options.includes('redis');
-			var rabbit 			= answers.options.includes('rabbit');
-			var swagger 		= answers.options.includes('swagger');
-			var devtools 		= answers.options.includes('devtools');
-			var packageRoot 	= answers.group;
-			var artifactName 	= answers.artifact;
-			var packageConfig 	= packageRoot + '.config';
-			var packageService 	= packageRoot + '.service';
-			var packageEndpoint = packageRoot + '.endpoint';
-			var packageRabbit  	= packageRoot + '.rabbit';
-			var packagePath 	= answers.group.split('.').join('/');
-			var appTitle 		= answers.appname;
-			var appName 		= answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
+			var redis 				= answers.options.includes('cache-redis');
+			var rabbit	 			= answers.options.includes('amqp-rabbit');
+			var kafka 				= answers.options.includes('kafka');
+			var kafkaTopic 			= answers.artifact.replace(/\w\S*/g, function(txt){ return txt.toLowerCase(); });
+			var kafkaGroupId 		= 'group_id';
+			var swagger 			= answers.options.includes('swagger');
+			var devtools 			= answers.options.includes('devtools');
+			var actuator	 	 	= answers.options.includes('actuator');
+			var metricsinflux 		= answers.options.includes('metrics-influx');
+			var dtsourceinflux 		= answers.options.includes('dtsource-influx');
+			var mongodb 			= answers.options.includes('mongodb');
+			var postgres 			= answers.database == 'postgres';
+			var jpa 				= postgres;
+			var databaseJpa 		= (answers.database == 'postgres') ? 'POSTGRESQL' : 'MYSQL';
+			var databaseDialect 	= (answers.database == 'postgres') ? 'PostgreSQL9Dialect' : 'MysqlDialect';
+			var packageRoot 		= answers.group;
+			var artifactName 		= answers.artifact;
+			var packageConfig 		= packageRoot + '.config';
+			var packageService 		= packageRoot + '.service';
+			var packageEndpoint 	= packageRoot + '.endpoint';
+			var packageRabbit  		= packageRoot + '.rabbit';
+			var packageKafka 		= packageRoot + '.kafka';
+			var packageDomain  		= packageRoot + '.domain';
+			var packageRepository 	= packageRoot + '.repository';
+			var packageMongo 		= packageRoot + '.document';
+			var packageMongoDomain 	= packageRoot + '.document.domain';
+			var packageMongoRepo  	= packageRoot + '.document.repository';
+			var packagePath 		= answers.group.split('.').join('/');
+			var appTitle 			= answers.appname;
+			var appName 			= answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
 			
 			// root files
 			this.destinationRoot(answers.artifact);
@@ -84,29 +110,147 @@ module.exports = class extends Generator {
 				this.templatePath('pom.xml'),
 				this.destinationPath('pom.xml'), 
 				{
-					artifact	: artifactName, 
-					group		: packageRoot, 
-					container	: answers.container, 
-					apptitle	: appTitle, 
-					swagger 	: swagger, 
-					devtools 	: devtools, 
-					redis 		: redis, 
-					rabbit 		: rabbit
+					artifact			: artifactName, 
+					group				: packageRoot, 
+					container			: answers.container, 
+					apptitle			: appTitle, 
+					swagger 			: swagger, 
+					mongodb 			: mongodb, 
+					devtools 			: devtools, 
+					actuator 			: actuator, 
+					metricsinflux 		: metricsinflux, 
+					jpa 				: jpa, 
+					postgres			: postgres, 
+					redis 				: redis, 
+					rabbit 				: rabbit, 
+					kafka 				: kafka
+				}
+			);
+			this.destinationRoot('src/docker');
+			this.fs.copyTpl(
+				this.templatePath('docker/README-stack.md'),
+				this.destinationPath('README-stack.md'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					swagger 			: swagger, 
+					mongodb 			: mongodb, 
+					metricsinflux 		: metricsinflux, 
+					postgres			: postgres, 
+					redis 				: redis, 
+					rabbit 				: rabbit, 
+					kafka 				: kafka
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('docker/Dockerfile'),
+				this.destinationPath('Dockerfile'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					swagger 			: swagger, 
+					mongodb 			: mongodb, 
+					metricsinflux 		: metricsinflux, 
+					postgres			: postgres, 
+					redis 				: redis, 
+					rabbit 				: rabbit, 
+					kafka				: kafka
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('docker/docker-compose.yml'),
+				this.destinationPath('docker-compose.yml'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					swagger 			: swagger, 
+					mongodb 			: mongodb, 
+					metricsinflux 		: metricsinflux, 
+					postgres			: postgres, 
+					redis 				: redis, 
+					rabbit 				: rabbit, 
+					kafka 				: kafka
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('docker/stack.sh'),
+				this.destinationPath('stack.sh'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					swagger 			: swagger, 
+					mongodb 			: mongodb, 
+					metricsinflux 		: metricsinflux, 
+					postgres			: postgres, 
+					redis 				: redis, 
+					rabbit 				: rabbit, 
+					kafka				: kafka
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('docker/standalone.sh'),
+				this.destinationPath('standalone.sh'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					swagger 			: swagger, 
+					mongodb 			: mongodb, 
+					metricsinflux 		: metricsinflux, 
+					postgres			: postgres, 
+					redis 				: redis, 
+					rabbit 				: rabbit, 
+					kafka				: kafka
+				}
+			);
+
+			this.destinationRoot('../postman');
+			this.fs.copyTpl(
+				this.templatePath('postman/postman-collection.json'),
+				this.destinationPath(artifactName + '-postman-collection.json'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					mongodb 			: mongodb, 
+					kafka 				: kafka, 
+					jpa 				: jpa
+				}
+			);
+
+			this.destinationRoot('../curl');
+			this.fs.copyTpl(
+				this.templatePath('curl/curl-requests.txt'),
+				this.destinationPath(artifactName + '-curl-requests.txt'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					mongodb 			: mongodb, 
+					kafka 				: kafka, 
+					jpa 				: jpa
 				}
 			);
 
 			// resources
-			this.destinationRoot('src/main/resources');
+			this.destinationRoot('../main/resources');
 			this.fs.copyTpl(
 				this.templatePath('application.yml'),
 				this.destinationPath('application.yml'), 
 				{
-					apptitle	: appTitle, 
-					artifact 	: artifactName, 
-					packageroot	: packageRoot, 
-					swagger 	: swagger, 
-					redis 		: redis, 
-					rabbit 		: rabbit
+					apptitle		: appTitle, 
+					artifact 		: artifactName, 
+					packageroot		: packageRoot, 
+					swagger 		: swagger, 
+					mongodb 		: mongodb, 
+					actuator 		: actuator, 
+					metricsinflux 	: metricsinflux, 
+					redis 			: redis, 
+					rabbit 			: rabbit, 
+					kafka 			: kafka, 
+					kafkaTopic 		: kafkaTopic, 
+					kafkaGroupId 	: kafkaGroupId, 
+					jpa 			: jpa, 
+					databaseJpa 	: databaseJpa, 
+					postgres		: postgres, 
+					databaseDialect : databaseDialect 
 				}
 			);
 			this.fs.copyTpl(
@@ -136,23 +280,34 @@ module.exports = class extends Generator {
 			this.destinationRoot('./config');
 			if (redis) {
 				this.fs.copyTpl(
-					this.templatePath('CacheConfig.java'), 
+					this.templatePath('redis/CacheConfig.java'), 
 					this.destinationPath('CacheConfig.java'), 
 					{
 						packageConfig: packageConfig
 					}
 				);
 				this.fs.copyTpl(
-					this.templatePath('CacheKeyGenerator.java'), 
+					this.templatePath('redis/CacheKeyGenerator.java'), 
 					this.destinationPath('CacheKeyGenerator.java'), 
 					{
 						packageConfig: packageConfig
 					}
 				);
 			}
+			if (jpa) {
+				this.fs.copyTpl(
+					this.templatePath('jpa/JpaConfig.java'), 
+					this.destinationPath('JpaConfig.java'), 
+					{
+						packageConfig		: packageConfig, 
+						packageRepository	: packageRepository, 
+						packageDomain		: packageDomain
+					}
+				);
+			}
 			if (swagger) {
 				this.fs.copyTpl(
-					this.templatePath('SwaggerConfig.java'), 
+					this.templatePath('swagger/SwaggerConfig.java'), 
 					this.destinationPath('SwaggerConfig.java'), 
 					{
 						packageConfig: packageConfig
@@ -161,39 +316,119 @@ module.exports = class extends Generator {
 			}
 			if (rabbit) {
 				this.fs.copyTpl(
-					this.templatePath('RabbitConfig.java'), 
+					this.templatePath('rabbit/RabbitConfig.java'), 
 					this.destinationPath('RabbitConfig.java'), 
 					{
 						packageConfig: packageConfig
 					}
 				);
+			}
+			if (kafka) {
+				this.fs.copyTpl(
+					this.templatePath('kafka/KafkaConfig.java'), 
+					this.destinationPath('KafkaConfig.java'), 
+					{
+						packageConfig: packageConfig
+					}
+				);
+			}
+
+			// java::domain
+			this.destinationRoot('../domain');
+			if (jpa) {
+				this.fs.copyTpl(
+					this.templatePath('jpa/Registry.java'), 
+					this.destinationPath('Registry.java'), 
+					{
+						packageDomain: packageDomain
+					}
+				);
+			}
+			if (mongodb) {
+				this.fs.copyTpl(
+					this.templatePath('mongo/Person.java'), 
+					this.destinationPath('Person.java'), 
+					{
+						packageDomain: packageDomain
+					}
+				);
+			}
+
+			// java: repository
+			this.destinationRoot('../repository');
+			if (jpa) {
+				this.fs.copyTpl(
+					this.templatePath('jpa/RegistryRepository.java'), 
+					this.destinationPath('RegistryRepository.java'), 
+					{
+						packageRepository	: packageRepository, 
+						packageDomain		: packageDomain
+					}
+				);
+			}
+			if (mongodb) {
+				this.fs.copyTpl(
+					this.templatePath('mongo/PersonRepository.java'), 
+					this.destinationPath('PersonRepository.java'), 
+					{
+						packageRepository	: packageRepository, 
+						packageDomain		: packageDomain
+					}
+				);
+			}
+
+			// java: rabbit
+			if (redis) {
 				this.destinationRoot('../rabbit');
 				this.fs.copyTpl(
-					this.templatePath('RabbitConverter.java'), 
+					this.templatePath('rabbit/RabbitConverter.java'), 
 					this.destinationPath('RabbitConverter.java'), 
 					{
 						packageRabbit	: packageRabbit
 					}
 				);
 				this.fs.copyTpl(
-					this.templatePath('RabbitMessageListener.java'), 
+					this.templatePath('rabbit/RabbitMessageListener.java'), 
 					this.destinationPath('RabbitMessageListener.java'), 
 					{
 						packageRabbit	: packageRabbit
 					}
 				);
 				this.fs.copyTpl(
-					this.templatePath('RabbitSamplePojo.java'), 
+					this.templatePath('rabbit/RabbitSamplePojo.java'), 
 					this.destinationPath('RabbitSamplePojo.java'), 
 					{
 						packageRabbit	: packageRabbit
 					}
 				);
 				this.fs.copyTpl(
-					this.templatePath('RabbitSender.java'), 
+					this.templatePath('rabbit/RabbitSender.java'), 
 					this.destinationPath('RabbitSender.java'), 
 					{
 						packageRabbit	: packageRabbit
+					}
+				);
+			}
+
+			// java: kafka
+			if (kafka) {
+				this.destinationRoot('../kafka');
+				this.fs.copyTpl(
+					this.templatePath('kafka/KafkaProducer.java'), 
+					this.destinationPath('KafkaProducer.java'), 
+					{
+						packageKafka	: packageKafka, 
+						kafkaTopic 		: kafkaTopic, 
+						kafkaGroupId 	: kafkaGroupId
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('kafka/KafkaConsumer.java'), 
+					this.destinationPath('KafkaConsumer.java'), 
+					{
+						packageKafka	: packageKafka, 
+						kafkaTopic 		: kafkaTopic, 
+						kafkaGroupId 	: kafkaGroupId
 					}
 				);
 			}
@@ -204,12 +439,36 @@ module.exports = class extends Generator {
 				this.templatePath('ApiBaseService.java'), 
 				this.destinationPath('ApiBaseService.java'), 
 				{
-					packageService	: packageService, 
-					packageRabbit	: packageRabbit, 
-					redis			: redis, 
-					rabbit 			: rabbit
+					packageService		: packageService, 
+					packageRabbit		: packageRabbit, 
+					packageRepository	: packageRepository, 
+					packageDomain		: packageDomain, 
+					redis				: redis, 
+					rabbit 				: rabbit
 				}
 			);
+			if (jpa) {
+				this.fs.copyTpl(
+					this.templatePath('jpa/RegistryService.java'), 
+					this.destinationPath('RegistryService.java'), 
+					{
+						packageService		: packageService, 
+						packageRepository	: packageRepository, 
+						packageDomain		: packageDomain
+					}
+				);
+			}
+			if (mongodb) {
+				this.fs.copyTpl(
+					this.templatePath('mongo/PersonService.java'), 
+					this.destinationPath('PersonService.java'), 
+					{
+						packageService		: packageService, 
+						packageRepository	: packageRepository, 
+						packageDomain		: packageDomain
+					}
+				);
+			}
 			
 			// java::endpoint
 			this.destinationRoot('../endpoint');
@@ -219,7 +478,10 @@ module.exports = class extends Generator {
 				{
 					packageEndpoint	: packageEndpoint, 
 					packageService	: packageService, 
-					rabbit 			: rabbit
+					packageDomain 	: packageDomain, 
+					jpa 			: jpa, 
+					rabbit 			: rabbit, 
+					mongodb 		: mongodb
 				}
 			);
 		});
