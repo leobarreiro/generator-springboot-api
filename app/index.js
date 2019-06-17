@@ -378,7 +378,7 @@ module.exports = class extends Generator {
 			}
 
 			// java: rabbit
-			if (redis) {
+			if (rabbit) {
 				this.destinationRoot('../rabbit');
 				this.fs.copyTpl(
 					this.templatePath('rabbit/RabbitConverter.java'), 
