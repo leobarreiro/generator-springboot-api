@@ -20,6 +20,7 @@ services:
       <% if (postgres) { %>- postgres<% } %>
       <% if (redis) { %>- redis<% } %>
       <% if (mongodb) { %>- mongodb<% } %>
+      <% if (rabbit) { %>- rabbitmq<% } %>
       <% if (kafka) { %>- kafka<% } %>
     networks:
       - backend
