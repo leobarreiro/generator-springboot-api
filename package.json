@@ -1,6 +1,6 @@
 {
   "name": "generator-springboot-api",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "SpringBoot REST API Generator",
   "main": "index.js",
   "scripts": {
