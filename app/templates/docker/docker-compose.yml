@@ -97,6 +97,10 @@ services:
     image: bitnami/mongodb:4.1
     ports: 
       - 27017:27017
+    environment:
+      - MONGODB_USERNAME=mongouser
+      - MONGODB_PASSWORD=mongodb<%=artifact%>@123
+      - MONGODB_DATABASE=<%=artifact%>
     networks:
       - backend
     volumes:
@@ -179,8 +183,8 @@ networks:
   frontend:
   <% if (kafka) { %>kafka-tier:<% } %>
 volumes:
-    <% if (metricsinflux) { %>postgresdata:<% } %>
-    <% if (postgres) { %>influxdbdata:<% } %>
+    <% if (metricsinflux) { %>influxdbdata:<% } %>
+    <% if (postgres) { %>postgresdata:<% } %>
     <% if (redis) { %>redisdata:<% } %>
     <% if (mongodb) { %>mongodbdata:<% } %>
     <% if (rabbit) { %>rabbitdata:<% } %>

@@ -22,13 +22,8 @@ public class RabbitSender {
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
 
-	@Autowired
-	private RabbitConverter<RabbitSamplePojo> converter;
-
 	public void sendMessage(String content) {
-		RabbitSamplePojo sample = RabbitSamplePojo.builder().content(content).build();
-		Map<String, String> mapContent = converter.convert(sample);
-		rabbitTemplate.convertAndSend(writeQueue, mapContent);
+		rabbitTemplate.convertAndSend(writeQueue, content);
 		log.info("Message sent through Rabbit AMQP");
 	}
 

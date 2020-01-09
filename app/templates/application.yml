@@ -37,7 +37,9 @@ spring:
     mongodb:
       host: <%=artifact%>_mongodb
       port: 27017
-      database: <%=artifact%><% } %>
+      database: <%=artifact%>
+      username: mongouser
+      password: mongodb<%=artifact%>@123<% } %>
 <% if (rabbit) { %>  rabbitmq:
     host: <%=artifact%>_rabbitmq
     port: 5672

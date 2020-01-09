@@ -381,22 +381,8 @@ module.exports = class extends Generator {
 			if (rabbit) {
 				this.destinationRoot('../rabbit');
 				this.fs.copyTpl(
-					this.templatePath('rabbit/RabbitConverter.java'), 
-					this.destinationPath('RabbitConverter.java'), 
-					{
-						packageRabbit	: packageRabbit
-					}
-				);
-				this.fs.copyTpl(
 					this.templatePath('rabbit/RabbitMessageListener.java'), 
 					this.destinationPath('RabbitMessageListener.java'), 
-					{
-						packageRabbit	: packageRabbit
-					}
-				);
-				this.fs.copyTpl(
-					this.templatePath('rabbit/RabbitSamplePojo.java'), 
-					this.destinationPath('RabbitSamplePojo.java'), 
 					{
 						packageRabbit	: packageRabbit
 					}
