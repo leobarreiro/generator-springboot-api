@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import <%=packageService%>.ApiBaseService;
+
 <% if (jpa) { %>import <%=packageService%>.RegistryService;
 import <%=packageDomain%>.Registry;<% } %>
 
-<% if (mongodb) { %>import <%=packageDomain%>.Person;
+<% if (mongodb || rabbit) { %>import <%=packageDomain%>.Person;
 import <%=packageService%>.PersonService;<% } %>
 
 @RestController
@@ -28,7 +29,7 @@ public class ApiBaseEndpoint {
 	@Autowired
 	private ApiBaseService service;
 
-	<% if (mongodb) { %>@Autowired
+	<% if (mongodb || rabbit) { %>@Autowired
 	private PersonService personService;<% } %>
 
 	<% if (jpa) { %>@Autowired
@@ -45,11 +46,11 @@ public class ApiBaseEndpoint {
 		return service.localDate();
 	}
 
-	<% if (rabbit) {%>@GetMapping(path = "/rabbit/send")
+	<% if (rabbit) {%>@PostMapping(path = "/rabbit/send")
 	@ResponseBody
-	public String sendMessageToRabbit(@PathVariable("msg") String msg) {
-		service.sendMessageToRabbit(msg);
-		return "Message sent to Rabbit.";
+	public ResponseEntity<Person> sendMessageToRabbit(@RequestBody Person person) {
+		service.sendMessageToRabbit(person);
+		return new ResponseEntity<>(person, HttpStatus.OK);
 	}<%}%>
 
 	<% if (jpa) { %>@GetMapping(path = "/registry/list-all")

@@ -74,6 +74,7 @@ module.exports = class extends Generator {
 			var redis 				= answers.options.includes('cache-redis');
 			var rabbit	 			= answers.options.includes('amqp-rabbit');
 			var kafka 				= answers.options.includes('kafka');
+			var cloud 				= (kafka || rabbit);
 			var kafkaTopic 			= answers.artifact.replace(/\w\S*/g, function(txt){ return txt.toLowerCase(); });
 			var kafkaGroupId 		= 'group_id';
 			var swagger 			= answers.options.includes('swagger');
@@ -100,7 +101,7 @@ module.exports = class extends Generator {
 			var packageMongoRepo  	= packageRoot + '.document.repository';
 			var packagePath 		= answers.group.split('.').join('/');
 			var appTitle 			= answers.appname;
-			var appName 			= answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
+			var appName 			= answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('');
 			
 			// root files
 			this.destinationRoot(answers.artifact);
@@ -111,6 +112,7 @@ module.exports = class extends Generator {
 				this.destinationPath('pom.xml'), 
 				{
 					artifact			: artifactName, 
+					cloud 				: cloud, 
 					group				: packageRoot, 
 					container			: answers.container, 
 					apptitle			: appTitle, 
@@ -224,6 +226,7 @@ module.exports = class extends Generator {
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
 					mongodb 			: mongodb, 
+					rabbit 				: rabbit, 
 					kafka 				: kafka, 
 					jpa 				: jpa
 				}
@@ -245,6 +248,30 @@ module.exports = class extends Generator {
 					redis 			: redis, 
 					rabbit 			: rabbit, 
 					kafka 			: kafka, 
+					cloud 			: cloud, 
+					kafkaTopic 		: kafkaTopic, 
+					kafkaGroupId 	: kafkaGroupId, 
+					jpa 			: jpa, 
+					databaseJpa 	: databaseJpa, 
+					postgres		: postgres, 
+					databaseDialect : databaseDialect 
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('application-dev.yml'),
+				this.destinationPath('application-dev.yml'), 
+				{
+					apptitle		: appTitle, 
+					artifact 		: artifactName, 
+					packageroot		: packageRoot, 
+					swagger 		: swagger, 
+					mongodb 		: mongodb, 
+					actuator 		: actuator, 
+					metricsinflux 	: metricsinflux, 
+					redis 			: redis, 
+					rabbit 			: rabbit, 
+					kafka 			: kafka, 
+					cloud 			: cloud, 
 					kafkaTopic 		: kafkaTopic, 
 					kafkaGroupId 	: kafkaGroupId, 
 					jpa 			: jpa, 
@@ -314,15 +341,6 @@ module.exports = class extends Generator {
 					}
 				);
 			}
-			if (rabbit) {
-				this.fs.copyTpl(
-					this.templatePath('rabbit/RabbitConfig.java'), 
-					this.destinationPath('RabbitConfig.java'), 
-					{
-						packageConfig: packageConfig
-					}
-				);
-			}
 			if (kafka) {
 				this.fs.copyTpl(
 					this.templatePath('kafka/KafkaConfig.java'), 
@@ -381,17 +399,27 @@ module.exports = class extends Generator {
 			if (rabbit) {
 				this.destinationRoot('../rabbit');
 				this.fs.copyTpl(
-					this.templatePath('rabbit/RabbitMessageListener.java'), 
-					this.destinationPath('RabbitMessageListener.java'), 
+					this.templatePath('rabbit/RabbitChannels.java'), 
+					this.destinationPath('RabbitChannels.java'), 
 					{
-						packageRabbit	: packageRabbit
+						packageRabbit	: packageRabbit, 
+						artifact		: artifactName 
 					}
 				);
 				this.fs.copyTpl(
-					this.templatePath('rabbit/RabbitSender.java'), 
-					this.destinationPath('RabbitSender.java'), 
+					this.templatePath('rabbit/RabbitMessageListener.java'), 
+					this.destinationPath('RabbitMessageListener.java'), 
 					{
-						packageRabbit	: packageRabbit
+						packageRabbit	: packageRabbit, 
+						packageDomain 	: packageDomain
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('rabbit/RabbitMessageSender.java'), 
+					this.destinationPath('RabbitMessageSender.java'), 
+					{
+						packageRabbit	: packageRabbit, 
+						packageDomain 	: packageDomain
 					}
 				);
 			}
