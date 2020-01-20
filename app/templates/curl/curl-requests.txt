@@ -16,3 +16,6 @@ curl -X GET http://localhost:8080/<%=artifact%>/registry/list-all
 # Database Delete
 curl -X DELETE http://localhost:8080/<%=artifact%>/registry/remove/1<% } %>
 
+<% if (rabbit) { %>
+curl -X POST -H "Content-type: application/json" -d "{\"name\": \"Lorenzo\", \"surname\": \"Snow\"}" http://localhost:8080/<%=artifact%>/rabbit/send
+<% } %>
