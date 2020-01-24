@@ -27,7 +27,7 @@ server:
     export:
       influx:
         db: <%=artifact%>
-        uri: http://localhost:8086<% } %>
+        uri: http://<%=artifact%>_influxdb:8086<% } %>
 spring:
   messages:
     basename: i18n/messages
@@ -35,14 +35,21 @@ spring:
     type: redis<% } %>
 <% if (mongodb) { %>  data:
     mongodb:
-      host: localhost
+      host: <%=artifact%>_mongodb
       port: 27017
       database: <%=artifact%>
       username: <%=artifact%>
       password: <%=randomPasswd%><% } %>
+<% if (rabbit) { %>  rabbitmq:
+    host: <%=artifact%>_rabbitmq
+    port: 5672
+    username: <%=artifact%>
+    password: <%=randomPasswd%>
+    virtual-host: /
+    connection-timeout: 9000<% } %>
 <% if (postgres) { %>  datasource:
     platform: postgresql
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://<%=artifact%>_postgres:5432/postgres
     username: postgres
     password: <%=randomPasswd%>
     continue-on-error: true<% } %>
@@ -56,36 +63,28 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true<% } %>
-<% if (rabbit) { %>  rabbitmq:
-    host: localhost
-    port: 5672
-    username: <%=artifact%>
-    password: <%=randomPasswd%>
-    virtual-host: /
-    connection-timeout: 9000<% } %>
 <% if (kafka) { %>  kafka:
     consumer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: <%=artifact%>_kafka:9092
       group-id: <%=kafkaGroupId%>
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     producer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: <%=artifact%>_kafka:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer<% } %>
 <% if (cloud) { %>  cloud:
-    stream:
-      bindings:
-        <%=artifact%>_output:
-          destination: <%=artifact%>-output
-          contentType: application/json
-          producer:
-            headerMode: raw
-        <%=artifact%>_input:
-          destination: <%=artifact%>-input
-          contentType: application/json
-          consumer:
-            maxAttempts: 3
-            headerMode: raw
-<% } %>
+        stream:
+          bindings:
+            <%=artifact%>_output:
+              destination: <%=artifact%>-output
+              contentType: application/json
+              producer:
+                headerMode: raw
+            <%=artifact%>_input:
+              destination: <%=artifact%>-input
+              contentType: application/json
+              consumer:
+                maxAttempts: 3
+                headerMode: raw<% } %>

@@ -3,4 +3,4 @@ logging:
     root: WARN
 spring:
   application:
-    name: <%= artifact %>
+    name: <%=artifact%>
