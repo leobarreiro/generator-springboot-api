@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import <%=packageDomain%>.Person;
+
 import <%=packageService%>.ApiBaseService;
 
 <% if (jpa) { %>import <%=packageService%>.RegistryService;
 import <%=packageDomain%>.Registry;<% } %>
 
-<% if (mongodb || rabbit) { %>import <%=packageDomain%>.Person;
+<% if (mongodb) { %>
 import <%=packageService%>.PersonService;<% } %>
 
 @RestController
@@ -29,7 +31,7 @@ public class ApiBaseEndpoint {
 	@Autowired
 	private ApiBaseService service;
 
-	<% if (mongodb || rabbit) { %>@Autowired
+	<% if (mongodb) { %>@Autowired
 	private PersonService personService;<% } %>
 
 	<% if (jpa) { %>@Autowired
@@ -50,6 +52,13 @@ public class ApiBaseEndpoint {
 	@ResponseBody
 	public ResponseEntity<Person> sendMessageToRabbit(@RequestBody Person person) {
 		service.sendMessageToRabbit(person);
+		return new ResponseEntity<>(person, HttpStatus.OK);
+	}<%}%>
+
+	<% if (kafka) {%>@PostMapping(path = "/kafka/send")
+	@ResponseBody
+	public ResponseEntity<Person> sendMessageToKafka(@RequestBody Person person) {
+		service.sendMessageToKafka(person);
 		return new ResponseEntity<>(person, HttpStatus.OK);
 	}<%}%>
 
@@ -102,7 +111,7 @@ public class ApiBaseEndpoint {
 	@ResponseBody
 	public String deleteRegistry(@PathVariable("id") String id) {
 		personService.delete(id);
-		return "Person removed";
+		return "Person deleted";
 	}<% } %>
 
 }

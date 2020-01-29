@@ -94,8 +94,7 @@ module.exports = class extends Generator {
 			var packageConfig 		= packageRoot + '.config';
 			var packageService 		= packageRoot + '.service';
 			var packageEndpoint 	= packageRoot + '.endpoint';
-			var packageRabbit  		= packageRoot + '.rabbit';
-			var packageKafka 		= packageRoot + '.kafka';
+			var packageAmqp  		= packageRoot + '.amqp';
 			var packageDomain  		= packageRoot + '.domain';
 			var packageRepository 	= packageRoot + '.repository';
 			var packageMongo 		= packageRoot + '.document';
@@ -397,21 +396,21 @@ module.exports = class extends Generator {
 
 			// java::domain
 			this.destinationRoot('../domain');
+			this.fs.copyTpl(
+				this.templatePath('domain/Person.java'), 
+				this.destinationPath('Person.java'), 
+				{
+					packageDomain	: packageDomain, 
+					mongo 			: mongodb
+				}
+			);
+
 			if (jpa) {
 				this.fs.copyTpl(
 					this.templatePath('jpa/Registry.java'), 
 					this.destinationPath('Registry.java'), 
 					{
-						packageDomain: packageDomain
-					}
-				);
-			}
-			if (mongodb) {
-				this.fs.copyTpl(
-					this.templatePath('mongo/Person.java'), 
-					this.destinationPath('Person.java'), 
-					{
-						packageDomain: packageDomain
+						packageDomain	: packageDomain
 					}
 				);
 			}
@@ -441,12 +440,12 @@ module.exports = class extends Generator {
 
 			// java: rabbit
 			if (rabbit) {
-				this.destinationRoot('../rabbit');
+				this.destinationRoot('../amqp');
 				this.fs.copyTpl(
 					this.templatePath('rabbit/RabbitChannels.java'), 
 					this.destinationPath('RabbitChannels.java'), 
 					{
-						packageRabbit	: packageRabbit, 
+						packageAmqp		: packageAmqp, 
 						artifact		: artifactName 
 					}
 				);
@@ -454,7 +453,7 @@ module.exports = class extends Generator {
 					this.templatePath('rabbit/RabbitMessageListener.java'), 
 					this.destinationPath('RabbitMessageListener.java'), 
 					{
-						packageRabbit	: packageRabbit, 
+						packageAmqp		: packageAmqp, 
 						packageDomain 	: packageDomain
 					}
 				);
@@ -462,7 +461,7 @@ module.exports = class extends Generator {
 					this.templatePath('rabbit/RabbitMessageSender.java'), 
 					this.destinationPath('RabbitMessageSender.java'), 
 					{
-						packageRabbit	: packageRabbit, 
+						packageAmqp		: packageAmqp, 
 						packageDomain 	: packageDomain
 					}
 				);
@@ -470,23 +469,29 @@ module.exports = class extends Generator {
 
 			// java: kafka
 			if (kafka) {
-				this.destinationRoot('../kafka');
+				this.destinationRoot('../amqp');
 				this.fs.copyTpl(
-					this.templatePath('kafka/KafkaProducer.java'), 
-					this.destinationPath('KafkaProducer.java'), 
+					this.templatePath('kafka/KafkaChannels.java'), 
+					this.destinationPath('KafkaChannels.java'), 
 					{
-						packageKafka	: packageKafka, 
-						kafkaTopic 		: kafkaTopic, 
-						kafkaGroupId 	: kafkaGroupId
+						packageAmqp		: packageAmqp, 
+						artifact		: artifactName 
 					}
 				);
 				this.fs.copyTpl(
-					this.templatePath('kafka/KafkaConsumer.java'), 
-					this.destinationPath('KafkaConsumer.java'), 
+					this.templatePath('kafka/KafkaMessageListener.java'), 
+					this.destinationPath('KafkaMessageListener.java'), 
 					{
-						packageKafka	: packageKafka, 
-						kafkaTopic 		: kafkaTopic, 
-						kafkaGroupId 	: kafkaGroupId
+						packageAmqp		: packageAmqp, 
+						packageDomain 	: packageDomain
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('kafka/KafkaMessageSender.java'), 
+					this.destinationPath('KafkaMessageSender.java'), 
+					{
+						packageAmqp		: packageAmqp, 
+						packageDomain 	: packageDomain
 					}
 				);
 			}
@@ -498,11 +503,12 @@ module.exports = class extends Generator {
 				this.destinationPath('ApiBaseService.java'), 
 				{
 					packageService		: packageService, 
-					packageRabbit		: packageRabbit, 
+					packageAmqp			: packageAmqp, 
 					packageRepository	: packageRepository, 
 					packageDomain		: packageDomain, 
 					redis				: redis, 
-					rabbit 				: rabbit
+					rabbit 				: rabbit, 
+					kafka 				: kafka
 				}
 			);
 			if (jpa) {
@@ -539,6 +545,7 @@ module.exports = class extends Generator {
 					packageDomain 	: packageDomain, 
 					jpa 			: jpa, 
 					rabbit 			: rabbit, 
+					kafka 			: kafka, 
 					mongodb 		: mongodb
 				}
 			);

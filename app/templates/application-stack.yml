@@ -63,19 +63,21 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true<% } %>
-<% if (kafka) { %>  kafka:
-    consumer:
-      bootstrap-servers: <%=artifact%>_kafka:9092
-      group-id: <%=kafkaGroupId%>
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    producer:
-      bootstrap-servers: <%=artifact%>_kafka:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer<% } %>
 <% if (cloud) { %>  cloud:
         stream:
+          <% if (kafka) { %>defaultBinder: business
+          binders:
+            business:
+              type: kafka
+              environment:
+                spring:
+                  cloud:
+                    stream:
+                      kafka:
+                        binder:
+                          autoAddPartitions: true
+                          brokers: <%=artifact%>_kafka:9092
+                          zkNodes: <%=artifact%>_kafka:2181<% } %>
           bindings:
             <%=artifact%>_output:
               destination: <%=artifact%>-output

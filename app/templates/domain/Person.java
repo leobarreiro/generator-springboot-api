@@ -13,15 +13,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "person")
+<% if (mongo) { %>@Document(collection = "person")<% } %>
 public class Person {
 
-	@Id
+	<% if (mongo) { %>@Id<% } %>
 	private String id;
 
 	private String name;
-
-	@Indexed(unique = false)
+	<% if (mongo) { %>@Indexed(unique = false)<% } %>
 	private String surname;
 
 }

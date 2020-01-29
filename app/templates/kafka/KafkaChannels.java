@@ -1,21 +1,20 @@
 package <%=packageAmqp%>;
 
-
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.SubscribableChannel;
 
-public interface RabbitChannels {
+public interface KafkaChannels {
 
-	public static final String RABBIT_OUTPUT = "<%=artifact%>_output";
+	public static final String OUTPUT_BINDING = "<%=artifact%>_output";
 
-	public static final String RABBIT_INPUT = "<%=artifact%>_input";
+	public static final String INPUT_BINDING = "<%=artifact%>_input";
 
-	@Input(RABBIT_INPUT)
+	@Input(INPUT_BINDING)
 	SubscribableChannel messageInputChannel();
 
-	@Output(RABBIT_OUTPUT)
+	@Output(OUTPUT_BINDING)
 	MessageChannel messageOutputChannel();
 
 }

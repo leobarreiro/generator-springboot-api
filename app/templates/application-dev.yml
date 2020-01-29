@@ -63,19 +63,21 @@ spring:
     password: <%=randomPasswd%>
     virtual-host: /
     connection-timeout: 9000<% } %>
-<% if (kafka) { %>  kafka:
-    consumer:
-      bootstrap-servers: localhost:9092
-      group-id: <%=kafkaGroupId%>
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer<% } %>
 <% if (cloud) { %>  cloud:
     stream:
+      <% if (kafka) { %>defaultBinder: business
+      binders:
+        business:
+          type: kafka
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    binder:
+                      autoAddPartitions: true
+                      brokers: 127.0.0.1:9092
+                      zkNodes: 127.0.0.1:2181<% } %>
       bindings:
         <%=artifact%>_output:
           destination: <%=artifact%>-output
