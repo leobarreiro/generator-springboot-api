@@ -1,6 +1,7 @@
 'use strict';
 
 const { closeSync, openSync } = require('fs');
+const { uniqueNamesGenerator, names, animals, starWars } = require('unique-names-generator');
 const touch = filename => closeSync(openSync(filename, 'w'));
 const Generator = require('yeoman-generator');
 const Prompt = require('prompt-checkbox');
@@ -17,8 +18,8 @@ module.exports = class extends Generator {
 			{
 				type    : 'input',
 				name    : 'group', 
-				default : 'org.javaleo.api', 
-				message : 'Please type the groupId [org.javaleo.api]: ', 
+				default : 'com.botzcamp.api', 
+				message : 'Please type the groupId [com.botzcamp.api]: ', 
 				validate: function(group) {
 					var validPack = typeof group == 'string' && group.indexOf('.') > 0;
 					if (!validPack) {
@@ -34,17 +35,17 @@ module.exports = class extends Generator {
 				message : 'Enter a name for the artifactId [springfield]: '
 			}, 
 			{
-				type 	: 'input', 
-				name 	: 'appname', 
-				default : 'Api Base Application', 
-				message : 'Type the application Title [Api Base Application]: ' 
-			}, 
-			{
 				type	: 'rawlist', 
 				name	: 'container', 
 				default : 'undertow', 
 				message : 'Select a micro-server [1 = undertow]: ', 
 				choices : ['undertow', 'jetty', 'tomcat']
+			}, 
+			{
+				type	: 'input', 
+				name	: 'port', 
+				default : '8080', 
+				message : 'Enter the port number to your micro-server [8080]: '
 			}, 
 			{
 				type	: 'checkbox', 
@@ -74,6 +75,7 @@ module.exports = class extends Generator {
 			var redis 				= answers.options.includes('cache-redis');
 			var rabbit	 			= answers.options.includes('amqp-rabbit');
 			var kafka 				= answers.options.includes('kafka');
+			var cloud 				= (kafka || rabbit);
 			var kafkaTopic 			= answers.artifact.replace(/\w\S*/g, function(txt){ return txt.toLowerCase(); });
 			var kafkaGroupId 		= 'group_id';
 			var swagger 			= answers.options.includes('swagger');
@@ -88,6 +90,7 @@ module.exports = class extends Generator {
 			var databaseDialect 	= (answers.database == 'postgres') ? 'PostgreSQL9Dialect' : 'MysqlDialect';
 			var packageRoot 		= answers.group;
 			var artifactName 		= answers.artifact;
+			var portNumber 			= answers.port;
 			var packageConfig 		= packageRoot + '.config';
 			var packageService 		= packageRoot + '.service';
 			var packageEndpoint 	= packageRoot + '.endpoint';
@@ -99,8 +102,11 @@ module.exports = class extends Generator {
 			var packageMongoDomain 	= packageRoot + '.document.domain';
 			var packageMongoRepo  	= packageRoot + '.document.repository';
 			var packagePath 		= answers.group.split('.').join('/');
-			var appTitle 			= answers.appname;
-			var appName 			= answers.appname.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('') + 'Application';
+			var appTitle 			= answers.artifact.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() + ' API'; });
+			var appName 			= appTitle.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('');
+			var randomName 			= uniqueNamesGenerator({dictionaries: [names, starWars], separator: ' ', length: 2});
+			var randomSurname 		= uniqueNamesGenerator({dictionaries: [starWars, names], separator: ' ', length: 2});
+			var randomPasswd 		= uniqueNamesGenerator({dictionaries: [starWars], separator: '', length: 1}) + Math.random().toPrecision(1).toString().substr(0, 3)).replace(' ', '');
 			
 			// root files
 			this.destinationRoot(answers.artifact);
@@ -111,6 +117,7 @@ module.exports = class extends Generator {
 				this.destinationPath('pom.xml'), 
 				{
 					artifact			: artifactName, 
+					cloud 				: cloud, 
 					group				: packageRoot, 
 					container			: answers.container, 
 					apptitle			: appTitle, 
@@ -139,7 +146,8 @@ module.exports = class extends Generator {
 					postgres			: postgres, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
-					kafka 				: kafka
+					kafka 				: kafka, 
+					randomPasswd 		: randomPasswd
 				}
 			);
 			this.fs.copyTpl(
@@ -163,13 +171,15 @@ module.exports = class extends Generator {
 				{
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
+					portNumber 			: portNumber, 
 					swagger 			: swagger, 
 					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
-					kafka 				: kafka
+					kafka 				: kafka, 
+					randomPasswd 		: randomPasswd
 				}
 			);
 			this.fs.copyTpl(
@@ -178,6 +188,7 @@ module.exports = class extends Generator {
 				{
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
+					portNumber 			: portNumber, 
 					swagger 			: swagger, 
 					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
@@ -193,13 +204,15 @@ module.exports = class extends Generator {
 				{
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
+					portNumber 			: portNumber, 
 					swagger 			: swagger, 
 					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
-					kafka				: kafka
+					kafka				: kafka, 
+					randomPasswd 		: randomPasswd
 				}
 			);
 
@@ -210,6 +223,7 @@ module.exports = class extends Generator {
 				{
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
+					portNumber 			: portNumber, 
 					mongodb 			: mongodb, 
 					kafka 				: kafka, 
 					jpa 				: jpa
@@ -223,9 +237,13 @@ module.exports = class extends Generator {
 				{
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
+					portNumber 			: portNumber, 
 					mongodb 			: mongodb, 
+					rabbit 				: rabbit, 
 					kafka 				: kafka, 
-					jpa 				: jpa
+					jpa 				: jpa, 
+					randomName 			: randomName, 
+					randomSurname 		: randomSurname
 				}
 			);
 
@@ -237,6 +255,7 @@ module.exports = class extends Generator {
 				{
 					apptitle		: appTitle, 
 					artifact 		: artifactName, 
+					portNumber 		: portNumber, 
 					packageroot		: packageRoot, 
 					swagger 		: swagger, 
 					mongodb 		: mongodb, 
@@ -245,12 +264,64 @@ module.exports = class extends Generator {
 					redis 			: redis, 
 					rabbit 			: rabbit, 
 					kafka 			: kafka, 
+					cloud 			: cloud, 
 					kafkaTopic 		: kafkaTopic, 
 					kafkaGroupId 	: kafkaGroupId, 
 					jpa 			: jpa, 
 					databaseJpa 	: databaseJpa, 
 					postgres		: postgres, 
-					databaseDialect : databaseDialect 
+					databaseDialect : databaseDialect, 
+					randomPasswd 	: randomPasswd
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('application-dev.yml'),
+				this.destinationPath('application-dev.yml'), 
+				{
+					apptitle		: appTitle, 
+					artifact 		: artifactName, 
+					portNumber 		: portNumber, 
+					packageroot		: packageRoot, 
+					swagger 		: swagger, 
+					mongodb 		: mongodb, 
+					actuator 		: actuator, 
+					metricsinflux 	: metricsinflux, 
+					redis 			: redis, 
+					rabbit 			: rabbit, 
+					kafka 			: kafka, 
+					cloud 			: cloud, 
+					kafkaTopic 		: kafkaTopic, 
+					kafkaGroupId 	: kafkaGroupId, 
+					jpa 			: jpa, 
+					databaseJpa 	: databaseJpa, 
+					postgres		: postgres, 
+					databaseDialect : databaseDialect, 
+					randomPasswd 	: randomPasswd 
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('application-stack.yml'),
+				this.destinationPath('application-stack.yml'), 
+				{
+					apptitle		: appTitle, 
+					artifact 		: artifactName, 
+					portNumber 		: portNumber, 
+					packageroot		: packageRoot, 
+					swagger 		: swagger, 
+					mongodb 		: mongodb, 
+					actuator 		: actuator, 
+					metricsinflux 	: metricsinflux, 
+					redis 			: redis, 
+					rabbit 			: rabbit, 
+					kafka 			: kafka, 
+					cloud 			: cloud, 
+					kafkaTopic 		: kafkaTopic, 
+					kafkaGroupId 	: kafkaGroupId, 
+					jpa 			: jpa, 
+					databaseJpa 	: databaseJpa, 
+					postgres		: postgres, 
+					databaseDialect : databaseDialect, 
+					randomPasswd 	: randomPasswd
 				}
 			);
 			this.fs.copyTpl(
@@ -314,15 +385,6 @@ module.exports = class extends Generator {
 					}
 				);
 			}
-			if (rabbit) {
-				this.fs.copyTpl(
-					this.templatePath('rabbit/RabbitConfig.java'), 
-					this.destinationPath('RabbitConfig.java'), 
-					{
-						packageConfig: packageConfig
-					}
-				);
-			}
 			if (kafka) {
 				this.fs.copyTpl(
 					this.templatePath('kafka/KafkaConfig.java'), 
@@ -381,31 +443,27 @@ module.exports = class extends Generator {
 			if (rabbit) {
 				this.destinationRoot('../rabbit');
 				this.fs.copyTpl(
-					this.templatePath('rabbit/RabbitConverter.java'), 
-					this.destinationPath('RabbitConverter.java'), 
+					this.templatePath('rabbit/RabbitChannels.java'), 
+					this.destinationPath('RabbitChannels.java'), 
 					{
-						packageRabbit	: packageRabbit
+						packageRabbit	: packageRabbit, 
+						artifact		: artifactName 
 					}
 				);
 				this.fs.copyTpl(
 					this.templatePath('rabbit/RabbitMessageListener.java'), 
 					this.destinationPath('RabbitMessageListener.java'), 
 					{
-						packageRabbit	: packageRabbit
+						packageRabbit	: packageRabbit, 
+						packageDomain 	: packageDomain
 					}
 				);
 				this.fs.copyTpl(
-					this.templatePath('rabbit/RabbitSamplePojo.java'), 
-					this.destinationPath('RabbitSamplePojo.java'), 
+					this.templatePath('rabbit/RabbitMessageSender.java'), 
+					this.destinationPath('RabbitMessageSender.java'), 
 					{
-						packageRabbit	: packageRabbit
-					}
-				);
-				this.fs.copyTpl(
-					this.templatePath('rabbit/RabbitSender.java'), 
-					this.destinationPath('RabbitSender.java'), 
-					{
-						packageRabbit	: packageRabbit
+						packageRabbit	: packageRabbit, 
+						packageDomain 	: packageDomain
 					}
 				);
 			}

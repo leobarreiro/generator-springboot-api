@@ -20,6 +20,7 @@ services:
       <% if (postgres) { %>- postgres<% } %>
       <% if (redis) { %>- redis<% } %>
       <% if (mongodb) { %>- mongodb<% } %>
+      <% if (rabbit) { %>- rabbitmq<% } %>
       <% if (kafka) { %>- kafka<% } %>
     networks:
       - backend
@@ -61,7 +62,7 @@ services:
     volumes:
       - postgresdata:/var/lib/postgresql/data
     environment:
-      - "POSTGRES_PASSWORD=pgdb<%=artifact%>@123"
+      - POSTGRES_PASSWORD=<%=randomPasswd%>
     deploy:
       resources:
         limits:
@@ -96,6 +97,10 @@ services:
     image: bitnami/mongodb:4.1
     ports: 
       - 27017:27017
+    environment:
+      - MONGODB_USERNAME=<%=artifact%>
+      - MONGODB_PASSWORD=<%=randomPasswd%>
+      - MONGODB_DATABASE=<%=artifact%>
     networks:
       - backend
     volumes:
@@ -117,6 +122,9 @@ services:
     ports: 
       - 5672:5672
       - 15672:15672
+    environment: 
+      - RABBITMQ_DEFAULT_USER=<%=artifact%>
+      - RABBITMQ_DEFAULT_PASS=<%=randomPasswd%>
     networks:
       - backend
     volumes:
@@ -133,34 +141,16 @@ services:
       replicas: 1
       placement:
         constraints: [node.role == manager]<% } %>
-  <% if (kafka) { %>zookeeper:
-    image: debezium/zookeeper:0.9.5.Final
+  <% if (kafka) { %>kafka:
+    image: spotify/kafka
     ports: 
       - 2181
-      - 2888
-      - 3888
-    networks:
-      - kafka-tier
-    deploy:
-      resources:
-        limits:
-          cpus: '0.20'
-          memory: 256M
-        reservations:
-          cpus: '0.10'
-          memory: 128M
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints: [node.role == manager]
-  kafka:
-    image: debezium/kafka:0.9.5.Final
-    ports: 
       - 9092
+    environment: 
+      - ADVERTISED_HOST=localhost
+      - ADVERTISED_PORT=9092
     networks:
       - kafka-tier
-    environment:
-      - "ZOOKEEPER_CONNECT=zookeeper:2181"
     deploy:
       resources:
         limits:
@@ -178,8 +168,8 @@ networks:
   frontend:
   <% if (kafka) { %>kafka-tier:<% } %>
 volumes:
-    <% if (metricsinflux) { %>postgresdata:<% } %>
-    <% if (postgres) { %>influxdbdata:<% } %>
+    <% if (metricsinflux) { %>influxdbdata:<% } %>
+    <% if (postgres) { %>postgresdata:<% } %>
     <% if (redis) { %>redisdata:<% } %>
     <% if (mongodb) { %>mongodbdata:<% } %>
     <% if (rabbit) { %>rabbitdata:<% } %>

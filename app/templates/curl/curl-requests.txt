@@ -1,18 +1,20 @@
 # Hello
-curl -X GET http://localhost:8080/<%=artifact%>/hello
+curl -X GET http://localhost:<%=portNumber%>/<%=artifact%>/hello
 
 # Date-now
-curl -X GET http://localhost:8080/<%=artifact%>/date/now
-
-<% if (jpa) {%># Database Save
-curl -X POST http://localhost:8080/<%=artifact%>/registry/save -d "description=Saving a new one"
+curl -X GET http://localhost:<%=portNumber%>/<%=artifact%>/date/now
+<% if (rabbit) { %>
+# Rabbit
+curl -X POST -H "Content-type: application/json" -d "{\"name\": \"<%=randomName%>\", \"surname\": \"<%=randomSurname%>\"}" http://localhost:<%=portNumber%>/<%=artifact%>/rabbit/send
+<% } if (jpa) {%># Database Save
+curl -X POST http://localhost:<%=portNumber%>/<%=artifact%>/registry/save -d "description=Saving a new one"
 
 # Database Update
-curl -X PUT http://localhost:8080/<%=artifact%>/registry/update/1 -d "description=Updating a registry"
+curl -X PUT http://localhost:<%=portNumber%>/<%=artifact%>/registry/update/1 -d "description=Updating a registry"
 
 # Database List all
-curl -X GET http://localhost:8080/<%=artifact%>/registry/list-all
+curl -X GET http://localhost:<%=portNumber%>/<%=artifact%>/registry/list-all
 
 # Database Delete
-curl -X DELETE http://localhost:8080/<%=artifact%>/registry/remove/1<% } %>
+curl -X DELETE http://localhost:<%=portNumber%>/<%=artifact%>/registry/remove/1<% } %>
 

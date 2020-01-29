@@ -1,6 +1,6 @@
 {
   "name": "generator-springboot-api",
-  "version": "0.0.7",
+  "version": "0.0.10",
   "description": "SpringBoot REST API Generator",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "spring-boot",
     "springboot",
     "java 8",
-    "docker", 
+    "docker",
     "docker stack",
     "maven",
     "javaleo.org"
@@ -31,7 +31,8 @@
     "ejs": "^2.6.1",
     "prompt-checkbox": "^2.2.0",
     "uppercamelcase": "^3.0.0",
-    "yeoman-generator": "^3.2.0"
+    "yeoman-generator": "^3.2.0",
+    "unique-names-generator": "^4.1.1"
   },
   "files": [
     "app"

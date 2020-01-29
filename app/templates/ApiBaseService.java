@@ -5,13 +5,17 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-<% if (rabbit) {%>import <%= packageRabbit %>.RabbitSender;<% } %>
+
+<% if (rabbit) {%>
+import <%= packageDomain %>.Person;
+import <%= packageRabbit %>.RabbitMessageSender;
+<% } %>
 
 @Service
 public class ApiBaseService {
 	
 	<% if (rabbit) { %>@Autowired
-	private RabbitSender rabbitSender;<% } %>
+	private RabbitMessageSender rabbitSender;<% } %>
 
 	<% if (redis) { %>@Cacheable("date-now")<% } %>
 	public String localDate() {
@@ -22,8 +26,8 @@ public class ApiBaseService {
 		return "Hello";
 	}
 
-	<% if (rabbit) { %>public void sendMessageToRabbit(String content) {
-		rabbitSender.sendMessage(content);
+	<% if (rabbit) { %>public void sendMessageToRabbit(Person person) {
+		rabbitSender.sendMessage(person);
 	} <% } %>
 
 }
