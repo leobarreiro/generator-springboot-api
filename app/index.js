@@ -105,7 +105,7 @@ module.exports = class extends Generator {
 			var appName 			= appTitle.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('');
 			var randomName 			= uniqueNamesGenerator({dictionaries: [names, starWars], separator: ' ', length: 2});
 			var randomSurname 		= uniqueNamesGenerator({dictionaries: [starWars, names], separator: ' ', length: 2});
-			var randomPasswd 		= uniqueNamesGenerator({dictionaries: [starWars], separator: '', length: 1}) + Math.random().toPrecision(1).toString().substr(0, 3)).replace(' ', '');
+			var randomPasswd 		= (uniqueNamesGenerator({dictionaries: [starWars], separator: '', length: 1}) + Math.random().toPrecision(1).toString().substr(0, 3)).replace(' ', '');
 			
 			// root files
 			this.destinationRoot(answers.artifact);
@@ -379,15 +379,6 @@ module.exports = class extends Generator {
 				this.fs.copyTpl(
 					this.templatePath('swagger/SwaggerConfig.java'), 
 					this.destinationPath('SwaggerConfig.java'), 
-					{
-						packageConfig: packageConfig
-					}
-				);
-			}
-			if (kafka) {
-				this.fs.copyTpl(
-					this.templatePath('kafka/KafkaConfig.java'), 
-					this.destinationPath('KafkaConfig.java'), 
 					{
 						packageConfig: packageConfig
 					}
