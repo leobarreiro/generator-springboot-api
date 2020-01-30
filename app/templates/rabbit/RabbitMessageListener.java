@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @EnableBinding(RabbitChannels.class)
 public class RabbitMessageListener {
 
-	@StreamListener(RabbitChannels.RABBIT_INPUT)
+	@StreamListener(RabbitChannels.INPUT_BINDING)
 	public void receiveMessage(@Payload Person person) throws IOException {
 		log.info("Message received from RabbitMQ: {}", person.toString());
 	}

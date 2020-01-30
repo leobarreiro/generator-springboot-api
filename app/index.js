@@ -31,18 +31,17 @@ module.exports = class extends Generator {
 			{
 				type    : 'input',
 				name    : 'artifact', 
-				default : 'springfield', 
-				message : 'Enter a name for the artifactId [springfield]: '
+				message : 'Enter a name for the artifactId: '
 			}, 
 			{
 				type	: 'rawlist', 
 				name	: 'container', 
 				default : 'undertow', 
-				message : 'Select a micro-server [1 = undertow]: ', 
+				message : 'Select a embedded server [1 = undertow]: ', 
 				choices : ['undertow', 'jetty', 'tomcat']
 			}, 
 			{
-				type	: 'input', 
+				type	: 'number', 
 				name	: 'port', 
 				default : '8080', 
 				message : 'Enter the port number to your micro-server [8080]: '
@@ -55,13 +54,22 @@ module.exports = class extends Generator {
 				choices : [
 					{name: 'Git Repo', value: 'git'}, 
 					{name: 'Devtools', value: 'devtools'}, 
-					{name: 'Swagger Docs', value: 'swagger'}, 
-					{name: 'Redis Cache', value: 'cache-redis'}, 
 					{name: 'Mongo DB', value: 'mongodb'}, 
-					{name: 'RabbitMQ', value: 'amqp-rabbit'}, 
-					{name: 'Apache Kafka', value: 'kafka'}, 
+					{name: 'Redis Cache', value: 'cache-redis'}, 
 					{name: 'Spring Actuator', value: 'actuator'}, 
-					{name: 'Metrics InfluxDB', value: 'metrics-influx'} 
+					{name: 'Metrics InfluxDB', value: 'metrics-influx'}, 
+					{name: 'Swagger Docs', value: 'swagger'} 
+				]
+			}, 
+			{
+				type	: 'rawlist', 
+				name 	: 'mqueue', 
+				message : 'Do you want to use a message queue?', 
+				default : 'none', 
+				choices : [
+					{name: 'None', value: 'none'}, 
+					{name: 'RabbitMQ', value: 'rabbit'}, 
+					{name: 'Apache Kafka', value: 'kafka'}
 				]
 			}, 
 			{
@@ -73,8 +81,8 @@ module.exports = class extends Generator {
 			}
 		]).then((answers) => {
 			var redis 				= answers.options.includes('cache-redis');
-			var rabbit	 			= answers.options.includes('amqp-rabbit');
-			var kafka 				= answers.options.includes('kafka');
+			var rabbit	 			= (answers.mqueue == 'rabbit');
+			var kafka 				= (answers.mqueue == 'kafka');
 			var cloud 				= (kafka || rabbit);
 			var kafkaTopic 			= answers.artifact.replace(/\w\S*/g, function(txt){ return txt.toLowerCase(); });
 			var kafkaGroupId 		= 'group_id';
@@ -97,9 +105,6 @@ module.exports = class extends Generator {
 			var packageAmqp  		= packageRoot + '.amqp';
 			var packageDomain  		= packageRoot + '.domain';
 			var packageRepository 	= packageRoot + '.repository';
-			var packageMongo 		= packageRoot + '.document';
-			var packageMongoDomain 	= packageRoot + '.document.domain';
-			var packageMongoRepo  	= packageRoot + '.document.repository';
 			var packagePath 		= answers.group.split('.').join('/');
 			var appTitle 			= answers.artifact.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() + ' API'; });
 			var appName 			= appTitle.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('');

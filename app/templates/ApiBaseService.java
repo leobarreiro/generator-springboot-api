@@ -14,7 +14,7 @@ import <%= packageAmqp %>.RabbitMessageSender;
 
 <% if (kafka) {%>
 	import <%= packageAmqp %>.KafkaMessageSender;
-	<% } %>
+<% } %>
 
 @Service
 public class ApiBaseService {
@@ -23,7 +23,7 @@ public class ApiBaseService {
 	private RabbitMessageSender rabbitSender;<% } %>
 
 	<% if (kafka) { %>@Autowired
-		private KafkaMessageSender kafkaSender;<% } %>
+	private KafkaMessageSender kafkaSender;<% } %>
 
 	<% if (redis) { %>@Cacheable("date-now")<% } %>
 	public String localDate() {

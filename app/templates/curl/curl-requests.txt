@@ -6,7 +6,11 @@ curl -X GET http://localhost:<%=portNumber%>/<%=artifact%>/date/now
 <% if (rabbit) { %>
 # Rabbit
 curl -X POST -H "Content-type: application/json" -d "{\"name\": \"<%=randomName%>\", \"surname\": \"<%=randomSurname%>\"}" http://localhost:<%=portNumber%>/<%=artifact%>/rabbit/send
-<% } if (jpa) {%># Database Save
+<% } if (kafka) { %>
+# Kafka
+curl -X POST -H "Content-type: application/json" -d "{\"name\": \"<%=randomName%>\", \"surname\": \"<%=randomSurname%>\"}" http://localhost:<%=portNumber%>/<%=artifact%>/kafka/send
+<% } if (jpa) {%>
+# Database Save
 curl -X POST http://localhost:<%=portNumber%>/<%=artifact%>/registry/save -d "description=Saving a new one"
 
 # Database Update
