@@ -15,24 +15,25 @@ services:
           memory: 128M
       mode: replicated
       replicas: 1
-    depends_on:
-      <% if (metricsinflux) { %>- influxdb<% } %>
-      <% if (postgres) { %>- postgres<% } %>
-      <% if (redis) { %>- redis<% } %>
-      <% if (mongodb) { %>- mongodb<% } %>
-      <% if (rabbit) { %>- rabbitmq<% } %>
-      <% if (kafka) { %>- kafka<% } %>
+    depends_on: <% if (mongodb) { %>
+      - mongodb<% } if (rabbit) { %>
+      - rabbitmq<% } if (kafka) { %>
+      - kafka<% } if (redis) { %>
+      - redis<% } if (postgres) { %>
+      - postgres<% } if (metricsinflux) { %>
+      - influxdb<% } %>
     networks:
       - backend
-      - frontend
-      <% if (kafka) { %>- kafka-tier<% } %>
-    links:
-      <% if (metricsinflux) { %>- influxdb:influxdb<% } %>
-      <% if (postgres) { %>- postgres:postgres<% } %>
-      <% if (redis) { %>- redis:redis<% } %>
-      <% if (mongodb) { %>- mongodb:mongodb<% } %>
-      <% if (kafka) { %>- kafka:kafka<% } %>
-  <% if (metricsinflux) { %>influxdb:
+      - frontend <% if (kafka || rabbit) { %>
+      - message<% } %>
+    links: <% if (mongodb) { %>
+      - mongodb:mongodb<% } if (postgres) { %>
+      - postgres:postgres<% } if (redis) { %>
+      - redis:redis<% } if (kafka) { %>
+      - kafka:kafka<% } if (rabbit) { %>
+      - rabbit:rabbit<% } if (metricsinflux) { %>
+      - influxdb:influxdb<% } if (metricsinflux) { %>
+  influxdb:
     image: influxdb:1.7.5-alpine
     ports: 
       - 8086:8086
@@ -52,8 +53,8 @@ services:
       mode: replicated
       replicas: 1
       placement:
-        constraints: [node.role == manager]<% } %>
-  <% if (postgres) { %>postgres:
+        constraints: [node.role == manager]<% } if (postgres) { %>
+  postgres:
     image: postgres:11.2-alpine
     ports: 
       - 5432:5432
@@ -74,8 +75,8 @@ services:
       mode: replicated
       replicas: 1
       placement:
-        constraints: [node.role == manager]<% } %>
-  <% if (redis) { %>redis:
+        constraints: [node.role == manager]<% } if (redis) { %>
+  redis:
     image: redis:5.0.4-alpine
     ports: 
       - 6379:6379
@@ -92,8 +93,8 @@ services:
           cpus: '0.20'
           memory: 128M
       mode: replicated
-      replicas: 1<% } %>
-  <% if (mongodb) { %>mongodb:
+      replicas: 1<% } if (mongodb) { %>
+  mongodb:
     image: bitnami/mongodb:4.1
     ports: 
       - 27017:27017
@@ -116,8 +117,8 @@ services:
       mode: replicated
       replicas: 1
       placement:
-        constraints: [node.role == manager]<% } %>
-  <% if (rabbit) { %>rabbitmq:
+        constraints: [node.role == manager]<% } if (rabbit) { %>
+  rabbitmq:
     image: rabbitmq:3.7.14-management-alpine
     ports: 
       - 5672:5672
@@ -126,7 +127,7 @@ services:
       - RABBITMQ_DEFAULT_USER=<%=artifact%>
       - RABBITMQ_DEFAULT_PASS=<%=randomPasswd%>
     networks:
-      - backend
+      - message
     volumes:
       - rabbitdata:/var/lib/rabbitmq
     deploy:
@@ -140,8 +141,8 @@ services:
       mode: replicated
       replicas: 1
       placement:
-        constraints: [node.role == manager]<% } %>
-  <% if (kafka) { %>kafka:
+        constraints: [node.role == manager]<% } if (kafka) { %>
+  kafka:
     image: spotify/kafka
     ports: 
       - 2181
@@ -150,7 +151,7 @@ services:
       - ADVERTISED_HOST=localhost
       - ADVERTISED_PORT=9092
     networks:
-      - kafka-tier
+      - message
     deploy:
       resources:
         limits:
@@ -165,11 +166,11 @@ services:
         constraints: [node.role == manager]<% } %>
 networks:
   backend:
-  frontend:
-  <% if (kafka) { %>kafka-tier:<% } %>
-volumes:
-    <% if (metricsinflux) { %>influxdbdata:<% } %>
-    <% if (postgres) { %>postgresdata:<% } %>
-    <% if (redis) { %>redisdata:<% } %>
-    <% if (mongodb) { %>mongodbdata:<% } %>
-    <% if (rabbit) { %>rabbitdata:<% } %>
+  frontend: <% if (kafka || rabbit) { %>
+  message:<% } %>
+volumes: <% if (postgres) { %>
+  postgresdata: <% } if (redis) { %>
+  redisdata: <% } if (mongodb) { %>
+  mongodbdata: <% } if (rabbit) { %>
+  rabbitdata: <% } if (metricsinflux) { %>
+  influxdbdata: <% } %>

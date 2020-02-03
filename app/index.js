@@ -34,6 +34,19 @@ module.exports = class extends Generator {
 				message : 'Enter a name for the artifactId: '
 			}, 
 			{
+				type    : 'input',
+				name    : 'version', 
+				default : '0.0.1-SNAPSHOT', 
+				message : 'Please type the API version [0.0.1-SNAPSHOT]: ', 
+				validate: function(version) {
+					var validVersion = typeof version == 'string' && version.indexOf('.') > 0;
+					if (!validVersion) {
+						console.log('\n version must be a string and contains at least one point "."');
+					}
+					return validVersion;
+				}
+			}, 
+			{
 				type	: 'rawlist', 
 				name	: 'container', 
 				default : 'undertow', 
@@ -44,7 +57,7 @@ module.exports = class extends Generator {
 				type	: 'number', 
 				name	: 'port', 
 				default : '8080', 
-				message : 'Enter the port number to your micro-server [8080]: '
+				message : 'Enter the port number to your micro-service [8080]: '
 			}, 
 			{
 				type	: 'checkbox', 
@@ -52,7 +65,6 @@ module.exports = class extends Generator {
 				message : 'Select the aditional options as below: ', 
 				radio 	: true, 
 				choices : [
-					{name: 'Git Repo', value: 'git'}, 
 					{name: 'Devtools', value: 'devtools'}, 
 					{name: 'Mongo DB', value: 'mongodb'}, 
 					{name: 'Redis Cache', value: 'cache-redis'}, 
@@ -80,6 +92,9 @@ module.exports = class extends Generator {
 				choices : ['none', 'postgres']
 			}
 		]).then((answers) => {
+			var packageRoot 		= answers.group;
+			var artifactName 		= answers.artifact;
+			var appVersion 			= answers.version;
 			var redis 				= answers.options.includes('cache-redis');
 			var rabbit	 			= (answers.mqueue == 'rabbit');
 			var kafka 				= (answers.mqueue == 'kafka');
@@ -90,14 +105,11 @@ module.exports = class extends Generator {
 			var devtools 			= answers.options.includes('devtools');
 			var actuator	 	 	= answers.options.includes('actuator');
 			var metricsinflux 		= answers.options.includes('metrics-influx');
-			var dtsourceinflux 		= answers.options.includes('dtsource-influx');
 			var mongodb 			= answers.options.includes('mongodb');
 			var postgres 			= answers.database == 'postgres';
 			var jpa 				= postgres;
 			var databaseJpa 		= (answers.database == 'postgres') ? 'POSTGRESQL' : 'MYSQL';
 			var databaseDialect 	= (answers.database == 'postgres') ? 'PostgreSQL9Dialect' : 'MysqlDialect';
-			var packageRoot 		= answers.group;
-			var artifactName 		= answers.artifact;
 			var portNumber 			= answers.port;
 			var packageConfig 		= packageRoot + '.config';
 			var packageService 		= packageRoot + '.service';
@@ -121,8 +133,9 @@ module.exports = class extends Generator {
 				this.destinationPath('pom.xml'), 
 				{
 					artifact			: artifactName, 
-					cloud 				: cloud, 
 					group				: packageRoot, 
+					appVersion 			: appVersion, 
+					cloud 				: cloud, 
 					container			: answers.container, 
 					apptitle			: appTitle, 
 					swagger 			: swagger, 

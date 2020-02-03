@@ -12,7 +12,7 @@
 	<groupId><%= group %></groupId>
 	<artifactId><%= artifact %></artifactId>
 	<name><%= apptitle %></name>
-	<version>0.0.1-SNAPSHOT</version>
+	<version><%=appVersion%></version>
 	<packaging>jar</packaging>
 	<properties>
 		<java.version>1.8</java.version>
@@ -25,32 +25,28 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-			<% if (container != 'tomcat') { %><exclusions>
+			<artifactId>spring-boot-starter-web</artifactId><% if (container != 'tomcat') { %>
+			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
 			</exclusions><% } %>
-		</dependency>
-		<% if (container != 'tomcat') { %><dependency>
+		</dependency><% if (container != 'tomcat') { %>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-<%= container %></artifactId>
-		</dependency>
-		<% } if (devtools) { %><dependency>
+		</dependency><% } if (devtools) { %>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
-		</dependency>
-		<% } if (redis) { %><dependency>
+		</dependency><% } if (redis) { %>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency>
-		<% } if (rabbit) { %><dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency>
-		<% } if (swagger) { %><dependency>
+		</dependency><% } if (swagger) { %>
+		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${springfox.version}</version>
@@ -59,12 +55,12 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${springfox.version}</version>
-		</dependency>
-		<% } if (actuator || metricsinflux) { %><dependency>
+		</dependency><% } if (actuator || metricsinflux) { %>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-		<% } if (metricsinflux) { %><dependency>
+		</dependency><% } if (metricsinflux) { %>
+		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-influx</artifactId>
 		</dependency>
@@ -79,15 +75,10 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-		</dependency>
-		<% } if (mongodb) { %>
+		</dependency><% } if (mongodb) { %>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency><% } if (kafka) { %>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
 		</dependency><% } if (cloud) { %>
 		<dependency>
     		<groupId>org.springframework.cloud</groupId>
