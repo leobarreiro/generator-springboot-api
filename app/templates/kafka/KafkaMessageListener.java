@@ -13,12 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-@EnableBinding(RabbitChannels.class)
-public class RabbitMessageListener {
+@EnableBinding(KafkaChannels.class)
+public class KafkaMessageListener {
 
-	@StreamListener(RabbitChannels.INPUT_BINDING)
+	@StreamListener(KafkaChannels.INPUT_BINDING)
 	public void receiveMessage(@Payload Person person) throws IOException {
-		log.info("Message received from RabbitMQ: {}", person.toString());
+		log.info("Message received from Kafka: {}", person.toString());
 	}
 
 }

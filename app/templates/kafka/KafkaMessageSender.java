@@ -11,15 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-@EnableBinding(value = { RabbitChannels.class })
-public class RabbitMessageSender {
+@EnableBinding(value = { KafkaChannels.class })
+public class KafkaMessageSender {
 
 	@Autowired
-	private RabbitChannels channels;
+	private KafkaChannels channels;
 
 	public void sendMessage(Person person) {
 		channels.messageOutputChannel().send(MessageBuilder.withPayload(person).build());
-		log.info("Message sent to RabbitMQ: {}", person.toString());
+		log.info("Message sent to Kafka: {}", person.toString());
 	}
 
 }

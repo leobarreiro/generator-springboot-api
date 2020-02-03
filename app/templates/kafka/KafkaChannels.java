@@ -5,7 +5,7 @@ import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.SubscribableChannel;
 
-public interface RabbitChannels {
+public interface KafkaChannels {
 
 	public static final String OUTPUT_BINDING = "<%=artifact%>_output";
 

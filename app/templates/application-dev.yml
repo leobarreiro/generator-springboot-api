@@ -1,52 +1,52 @@
 logging:
   level:
-    <%= packageroot %>: INFO
-    org.springframework.boot.context: INFO
+    <%= packageroot %>: DEBUG
+    org.springframework.boot.context: DEBUG
 server:
   compression:
     enabled: true
   port: <%=portNumber%>
   servlet: 
-    context-path: /<%=artifact%>
-<% if (swagger) { %>springfox:
+    context-path: /<%=artifact%><% if (swagger) { %>
+springfox:
   documentation:
     swagger.v2.path: /v2/api-docs
     info:
       title: 
       description: <%= apptitle %> Docs.
       version: 1.0
-    base-package: <%= packageroot %><% } %>
-<% if (actuator || metricsinflux) { %>management:
+    base-package: <%= packageroot %><% } %><% if (actuator || metricsinflux) { %>
+management:
   server:
     port: 9090
   endpoints:
     web:
       exposure:
-        include: '*'<% } %>
-<% if (metricsinflux) { %>  metrics:
+        include: '*'<% } if (metricsinflux) { %>
+  metrics:
     export:
       influx:
         db: <%=artifact%>
         uri: http://localhost:8086<% } %>
 spring:
   messages:
-    basename: i18n/messages
-<% if (redis) { %>  cache:
-    type: redis<% } %>
-<% if (mongodb) { %>  data:
+    basename: i18n/messages<% if (redis) { %>
+  cache:
+    type: redis<% } if (mongodb) { %>
+  data:
     mongodb:
       host: localhost
       port: 27017
       database: <%=artifact%>
       username: <%=artifact%>
-      password: <%=randomPasswd%><% } %>
-<% if (postgres) { %>  datasource:
+      password: <%=randomPasswd%><% } if (postgres) { %>
+  datasource:
     platform: postgresql
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: <%=randomPasswd%>
-    continue-on-error: true<% } %>
-<% if (jpa) { %>  jpa:
+    continue-on-error: true<% } if (jpa) { %>
+  jpa:
     hibernate:
       ddl-auto: update
     database: <%=databaseJpa%>
@@ -55,27 +55,29 @@ spring:
       hibernate:
         jdbc:
           lob:
-            non_contextual_creation: true<% } %>
-<% if (rabbit) { %>  rabbitmq:
+            non_contextual_creation: true<% } if (rabbit) { %>
+  rabbitmq:
     host: localhost
     port: 5672
     username: <%=artifact%>
     password: <%=randomPasswd%>
     virtual-host: /
-    connection-timeout: 9000<% } %>
-<% if (kafka) { %>  kafka:
-    consumer:
-      bootstrap-servers: localhost:9092
-      group-id: <%=kafkaGroupId%>
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer<% } %>
-<% if (cloud) { %>  cloud:
-    stream:
+    connection-timeout: 9000<% } if (cloud) { %>
+  cloud:
+    stream:<% if (kafka) { %>
+      defaultBinder: business
+      binders:
+        business:
+          type: kafka
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    binder:
+                      autoAddPartitions: true
+                      brokers: 127.0.0.1:9092
+                      zkNodes: 127.0.0.1:2181<% } %>
       bindings:
         <%=artifact%>_output:
           destination: <%=artifact%>-output
@@ -87,5 +89,4 @@ spring:
           contentType: application/json
           consumer:
             maxAttempts: 3
-            headerMode: raw
-<% } %>
+            headerMode: raw<% } %>

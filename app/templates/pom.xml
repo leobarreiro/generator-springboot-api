@@ -93,18 +93,17 @@
     		<groupId>org.springframework.cloud</groupId>
     		<artifactId>spring-cloud-starter</artifactId>
    			<version>2.1.1.RELEASE</version>
-		</dependency><% } if (cloud && rabbit) { %>
+		</dependency><% } if (rabbit) { %>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-stream-rabbit</artifactId>
 			<version>2.1.1.RELEASE</version>
-		</dependency><% } if (cloud && kafka) { %>
+		</dependency><% } if (kafka) { %>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-stream-kafka</artifactId>
 			<version>2.1.1.RELEASE</version>
-		</dependency>
-		<% } %>
+		</dependency><% } %>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
