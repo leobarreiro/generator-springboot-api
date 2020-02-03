@@ -30,9 +30,9 @@
     "decamelize": "^1.2.0",
     "ejs": "^2.6.1",
     "prompt-checkbox": "^2.2.0",
+    "unique-names-generator": "^4.1.1",
     "uppercamelcase": "^3.0.0",
-    "yeoman-generator": "^3.2.0",
-    "unique-names-generator": "^4.1.1"
+    "yeoman-generator": "^3.2.0"
   },
   "files": [
     "app"
