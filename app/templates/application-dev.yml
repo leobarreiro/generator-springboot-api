@@ -89,4 +89,15 @@ spring:
           contentType: application/json
           consumer:
             maxAttempts: 3
-            headerMode: raw<% } %>
+            headerMode: raw<% } if (mqtt) { %>
+<%=artifact%>:
+  messages:
+    output-queue: <%=artifact%>/output
+    input-queue: <%=artifact%>/input
+  mqtt:
+    automaticReconnect: true
+    cleanSession: true
+    connectionTimeout: 10
+    clientId: <%=artifact%>-client-mqtt
+    hostname: 127.0.0.1
+    port: 1883<% } %>

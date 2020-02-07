@@ -20,23 +20,21 @@ import <%=packageDomain%>.Person;
 import <%=packageService%>.ApiBaseService;
 
 <% if (jpa) { %>import <%=packageService%>.RegistryService;
-import <%=packageDomain%>.Registry;<% } %>
-
-<% if (mongodb) { %>
+import <%=packageDomain%>.Registry;<% } if (mongodb) { %>
 import <%=packageService%>.PersonService;<% } %>
 
 @RestController
 public class ApiBaseEndpoint {
 	
 	@Autowired
-	private ApiBaseService service;
+	private ApiBaseService service;<% if (mongodb) { %>
 
-	<% if (mongodb) { %>@Autowired
-	private PersonService personService;<% } %>
+	@Autowired
+	private PersonService personService;<% } if (jpa) { %>
 
-	<% if (jpa) { %>@Autowired
+	@Autowired
 	private RegistryService jpaService;<% } %>
-	
+
 	@GetMapping("/hello")
 	public ResponseEntity<String> helloWorld() {
 		return new ResponseEntity<>(service.hello(), HttpStatus.OK);
@@ -46,23 +44,30 @@ public class ApiBaseEndpoint {
 	@ResponseBody
 	public String localDateNow() {
 		return service.localDate();
-	}
-
-	<% if (rabbit) {%>@PostMapping(path = "/rabbit/send")
+	}<% if (rabbit) {%>
+		
+	@PostMapping(path = "/rabbit/send")
 	@ResponseBody
 	public ResponseEntity<Person> sendMessageToRabbit(@RequestBody Person person) {
 		service.sendMessageToRabbit(person);
 		return new ResponseEntity<>(person, HttpStatus.OK);
-	}<%}%>
-
-	<% if (kafka) {%>@PostMapping(path = "/kafka/send")
+	}<% } if (kafka) {%>
+		
+	@PostMapping(path = "/kafka/send")
 	@ResponseBody
 	public ResponseEntity<Person> sendMessageToKafka(@RequestBody Person person) {
 		service.sendMessageToKafka(person);
 		return new ResponseEntity<>(person, HttpStatus.OK);
-	}<%}%>
-
-	<% if (jpa) { %>@GetMapping(path = "/registry/list-all")
+	}<%} if (mqtt) {%>
+	
+	@PostMapping(path = "/mqtt/send")
+	@ResponseBody
+	public ResponseEntity<Person> sendMessageToMqtt(@RequestBody Person person) {
+		service.sendMessageToMqtt(person);
+		return new ResponseEntity<>(person, HttpStatus.OK);
+	}<%} if (jpa) { %>
+		
+	@GetMapping(path = "/registry/list-all")
 	@ResponseBody
 	public List<Registry> listAllRegistries() {
 		return jpaService.findAll();

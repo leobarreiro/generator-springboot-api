@@ -82,6 +82,7 @@ module.exports = class extends Generator {
 					{name: 'None', value: 'none'}, 
 					{name: 'RabbitMQ', value: 'rabbit'}, 
 					{name: 'Apache Kafka', value: 'kafka'}
+					{name: 'MQTT', value: 'mqtt'}
 				]
 			}, 
 			{
@@ -98,6 +99,7 @@ module.exports = class extends Generator {
 			var redis 				= answers.options.includes('cache-redis');
 			var rabbit	 			= (answers.mqueue == 'rabbit');
 			var kafka 				= (answers.mqueue == 'kafka');
+			var mqtt 				= (answers.mqueue == 'mqtt');
 			var cloud 				= (kafka || rabbit);
 			var kafkaTopic 			= answers.artifact.replace(/\w\S*/g, function(txt){ return txt.toLowerCase(); });
 			var kafkaGroupId 		= 'group_id';
@@ -147,7 +149,8 @@ module.exports = class extends Generator {
 					postgres			: postgres, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
-					kafka 				: kafka
+					kafka 				: kafka, 
+					mqtt 				: mqtt
 				}
 			);
 			this.destinationRoot('src/docker');
@@ -164,6 +167,7 @@ module.exports = class extends Generator {
 					redis 				: redis, 
 					rabbit 				: rabbit, 
 					kafka 				: kafka, 
+					mqtt 				: mqtt, 
 					randomPasswd 		: randomPasswd
 				}
 			);
@@ -179,7 +183,8 @@ module.exports = class extends Generator {
 					postgres			: postgres, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
-					kafka				: kafka
+					kafka				: kafka, 
+					mqtt 				: mqtt
 				}
 			);
 			this.fs.copyTpl(
@@ -196,6 +201,7 @@ module.exports = class extends Generator {
 					redis 				: redis, 
 					rabbit 				: rabbit, 
 					kafka 				: kafka, 
+					mqtt 				: mqtt, 
 					randomPasswd 		: randomPasswd
 				}
 			);
@@ -212,7 +218,8 @@ module.exports = class extends Generator {
 					postgres			: postgres, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
-					kafka				: kafka
+					kafka				: kafka, 
+					mqtt 				: mqtt
 				}
 			);
 			this.fs.copyTpl(
@@ -229,6 +236,7 @@ module.exports = class extends Generator {
 					redis 				: redis, 
 					rabbit 				: rabbit, 
 					kafka				: kafka, 
+					mqtt 				: mqtt, 
 					randomPasswd 		: randomPasswd
 				}
 			);
@@ -243,6 +251,7 @@ module.exports = class extends Generator {
 					portNumber 			: portNumber, 
 					mongodb 			: mongodb, 
 					kafka 				: kafka, 
+					mqtt 				: mqtt, 
 					jpa 				: jpa
 				}
 			);
@@ -258,6 +267,7 @@ module.exports = class extends Generator {
 					mongodb 			: mongodb, 
 					rabbit 				: rabbit, 
 					kafka 				: kafka, 
+					mqtt 				: mqtt, 
 					jpa 				: jpa, 
 					randomName 			: randomName, 
 					randomSurname 		: randomSurname
@@ -281,6 +291,7 @@ module.exports = class extends Generator {
 					redis 			: redis, 
 					rabbit 			: rabbit, 
 					kafka 			: kafka, 
+					mqtt 			: mqtt, 
 					cloud 			: cloud, 
 					kafkaTopic 		: kafkaTopic, 
 					kafkaGroupId 	: kafkaGroupId, 
@@ -306,6 +317,7 @@ module.exports = class extends Generator {
 					redis 			: redis, 
 					rabbit 			: rabbit, 
 					kafka 			: kafka, 
+					mqtt 			: mqtt, 
 					cloud 			: cloud, 
 					kafkaTopic 		: kafkaTopic, 
 					kafkaGroupId 	: kafkaGroupId, 
@@ -331,6 +343,7 @@ module.exports = class extends Generator {
 					redis 			: redis, 
 					rabbit 			: rabbit, 
 					kafka 			: kafka, 
+					mqtt 			: mqtt, 
 					cloud 			: cloud, 
 					kafkaTopic 		: kafkaTopic, 
 					kafkaGroupId 	: kafkaGroupId, 
@@ -505,6 +518,36 @@ module.exports = class extends Generator {
 				);
 			}
 
+			// java: mqtt
+			if (mqtt) {
+				this.destinationRoot('../amqp');
+				this.fs.copyTpl(
+					this.templatePath('mqtt/MqttConfig.java'), 
+					this.destinationPath('MqttConfig.java'), 
+					{
+						packageAmqp		: packageAmqp, 
+						artifact		: artifactName 
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('mqtt/MqttMessageListener.java'), 
+					this.destinationPath('MqttMessageListener.java'), 
+					{
+						packageAmqp		: packageAmqp, 
+						packageDomain 	: packageDomain
+					}
+				);
+				this.fs.copyTpl(
+					this.templatePath('mqtt/MqttMessageSender.java'), 
+					this.destinationPath('MqttMessageSender.java'), 
+					{
+						artifact		: artifactName, 
+						packageAmqp		: packageAmqp, 
+						packageDomain 	: packageDomain
+					}
+				);
+			}
+
 			// java::service
 			this.destinationRoot('../service');
 			this.fs.copyTpl(
@@ -517,7 +560,8 @@ module.exports = class extends Generator {
 					packageDomain		: packageDomain, 
 					redis				: redis, 
 					rabbit 				: rabbit, 
-					kafka 				: kafka
+					kafka 				: kafka, 
+					mqtt 				: mqtt 
 				}
 			);
 			if (jpa) {
@@ -555,6 +599,7 @@ module.exports = class extends Generator {
 					jpa 			: jpa, 
 					rabbit 			: rabbit, 
 					kafka 			: kafka, 
+					mqtt 			: mqtt, 
 					mongodb 		: mongodb
 				}
 			);

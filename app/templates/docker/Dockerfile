@@ -1,4 +1,4 @@
-FROM fabric8/java-alpine-openjdk8-jre:1.5.4
+FROM fabric8/java-alpine-openjdk8-jre:1.6.5
 
 ENV JAVA_APP_JAR=@project.artifactId@-@project.version@.jar \
     TZ=America/Sao_Paulo \
