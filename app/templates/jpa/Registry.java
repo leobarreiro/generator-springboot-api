@@ -14,21 +14,19 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Builder;
 import lombok.Builder.Default;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "REGISTRY")
 @SequenceGenerator(name = "regSeq", sequenceName = "REGISTRY_SEQ", allocationSize = 1, initialValue = 1)
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Registry implements Serializable {
 
 	private static final long serialVersionUID = -5181572986790243162L;
