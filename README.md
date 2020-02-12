@@ -1,4 +1,4 @@
-# What it does
+# How this springboot-api generator works
 
 The generator-springboot-api is a yeoman generator that builds a springboot microservices from scratch. 
 
@@ -9,6 +9,9 @@ The generator-springboot-api is a yeoman generator that builds a springboot micr
 2. Maven 3+
 3. [NPM](http://npmjs.org)
 4. [Yeoman](http://yeoman.io)
+5. [docker](https://docs.docker.com/install/) 
+6. [docker-compose](https://docs.docker.com/compose/install/)
+
 
 To install yeoman:
 ```
@@ -31,7 +34,8 @@ This generator allows to integrate the springboot REST API with:
 * PostgreSQL
 * RabbitMQ
 * Apache Kafka
-* Redis-cache
+* Redis for cache
+* MQTT
 * InfluxDB for metrics
 
 ## Additionally, this generator creates:
@@ -40,61 +44,70 @@ This generator allows to integrate the springboot REST API with:
 * A set of curl requests
 
 # How to use
+Remember you must install npm, yeoman and generator-springboot-api before use them. See the Prerequisites above.
 
 1. Start from this command
 ```
 $ yo springboot-api
 ```
 
-2. Type a groupId using maven patterns (e.g. org.javaleo.api)
+2. Type a groupId using maven patterns (e.g. com.botzcamp.api)
 
-3. Type an artifactId using maven patterns (e.g. springfield)
+3. Type an artifactId using maven patterns (e.g. myApplication)
 
-3. Choose a embed servers (mandatory)
+4. Choose a embed servers (mandatory)
 * undertow
 * tomcat
 * jetty
 
-4. Pick other options
+5. Select the aditional options as below
+* Devtools
 * Mongo DB
-* RabbitMQ AMQP
-* Apache Kafka
 * Redis Cache
-* Postgres Database
 * Spring Actuator
-* InfluxDB Metrics
+* Metrics InfluxDB
+* Swagger Docs
 
-After this, the generator will assembly your springboot api, using all the resources choosen.
+6. Select a message queue if you want
+* None
+* RabbitMQ
+* Apache Kafka
+* MQTT
 
-5. Compile with Maven
+After this simple options, the generator will assembly your springboot api, using all the resources choosen.
+
+7. Compile with Maven
+Once your application is assembled, compile it using maven:
+
 ```
 $ cd path_to_your_app
 $ mvn clean package -U
 ```
 
-6. After maven compilation, all the resources can be found in the *target* directory
-* JAR file compiled
-* Script shell to set up a complete docker stack
-* Curl requests
-* Postman collection to test your api
+8. After this maven command, all the resources compiled can be found in the *target* directory
+* JAR file compiled;
+* Script shell to set up a complete docker stack (and a docker-compose file);
+* Script shell to use your API with standalone docker container dependencies;
+* A complete set of curl requests, corresponding to the integrations you had choose;
+* A postman collection to test your API.
 
 ```
 $ cd target
 ```
 
-7. In the case you want to set up the complete docker stack, use the shell script *stack.sh*.
+9. If you want to set up the complete docker stack, use the shell script *stack.sh*.
 This script will build the docker image using the jar file and set up the stack, including all the services defined.
 
 First turn the script executable:
 ```
 $ chmod +x stack.sh
 ```
-Execute the script:
+And finnaly execute the script:
 ```
 $ ./stack.sh
 ```
 
-Note: In order to use *docker stack* and *docker service* you must initialize the swarm before:
+Note: In order to use *docker stack* and *docker service* you must initialize the swarm-mode before:
 ```
 $ docker swarm init
 ```

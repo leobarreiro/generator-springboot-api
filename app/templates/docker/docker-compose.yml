@@ -3,7 +3,7 @@ services:
   app:
     image: @project.artifactId@:@project.version@
     ports: 
-      - 8080:8080
+      - <%=portNumber%>:<%=portNumber%>
       - 9090:9090
     deploy:
       resources:
@@ -19,12 +19,13 @@ services:
       - mongodb<% } if (rabbit) { %>
       - rabbitmq<% } if (kafka) { %>
       - kafka<% } if (redis) { %>
-      - redis<% } if (postgres) { %>
+      - redis<% } if (mqtt) { %>
+      - mqtt<% } if (postgres) { %>
       - postgres<% } if (metricsinflux) { %>
       - influxdb<% } %>
     networks:
-      - backend
-      - frontend <% if (kafka || rabbit) { %>
+      - frontend<% if (postgres || mongodb || metricsinflux) { %>
+      - backend<% } if (kafka || rabbit || mqtt) { %>
       - message<% } %>
     links: <% if (mongodb) { %>
       - mongodb:mongodb<% } if (postgres) { %>
@@ -36,8 +37,8 @@ services:
   influxdb:
     image: influxdb:1.7.5-alpine
     ports: 
-      - 8086:8086
-      - 8083:8083
+      - 8086
+      - 8083
     networks:
       - backend
     volumes:
@@ -57,7 +58,7 @@ services:
   postgres:
     image: postgres:11.2-alpine
     ports: 
-      - 5432:5432
+      - 5432
     networks:
       - backend
     volumes:
@@ -79,7 +80,7 @@ services:
   redis:
     image: redis:5.0.4-alpine
     ports: 
-      - 6379:6379
+      - 6379
     networks:
       - backend
     volumes:
@@ -97,7 +98,7 @@ services:
   mongodb:
     image: bitnami/mongodb:4.1
     ports: 
-      - 27017:27017
+      - 27017
     environment:
       - MONGODB_USERNAME=<%=artifact%>
       - MONGODB_PASSWORD=<%=randomPasswd%>
@@ -121,7 +122,7 @@ services:
   rabbitmq:
     image: rabbitmq:3.7.14-management-alpine
     ports: 
-      - 5672:5672
+      - 5672
       - 15672:15672
     environment: 
       - RABBITMQ_DEFAULT_USER=<%=artifact%>
@@ -184,8 +185,8 @@ services:
       placement:
         constraints: [node.role == manager]<% } %>
 networks:
-  backend:
-  frontend: <% if (kafka || rabbit) { %>
+  frontend:<% if (postgres || mongodb || metricsinflux) { %>
+  backend:<% } if (kafka || rabbit || mqtt) { %>
   message:<% } %>
 volumes: <% if (postgres) { %>
   postgresdata: <% } if (redis) { %>

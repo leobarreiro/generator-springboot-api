@@ -92,9 +92,9 @@ public class ApiBaseEndpoint {
 	public String deleteRegistry(@PathVariable("id") Long id) {
 		jpaService.delete(id);
 		return "Registry deleted";
-	}<% } %>
-
-	<% if (mongodb) { %>@GetMapping(path = "/persons/surname/{surname}")
+	}<% } if (mongodb) { %>
+	
+	@GetMapping(path = "/persons/surname/{surname}")
 	@ResponseBody
 	public List<Person> listPersonsBySurname(@PathVariable("surname") String surname) {
 		return personService.findBySurname(surname);

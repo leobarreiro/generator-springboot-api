@@ -21,7 +21,10 @@ public class ApiBaseService {
 	private RabbitMessageSender rabbitSender;<% } if (kafka) { %>
 
 	@Autowired
-	private KafkaMessageSender kafkaSender;<% } 
+	private KafkaMessageSender kafkaSender;<% } if (mqtt) { %>
+
+	@Autowired
+	private MqttMessageSender mqttSender;<% } %>
 
 <% if (redis) { %>
 	@Cacheable("date-now")<% } %>

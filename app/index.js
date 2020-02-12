@@ -81,7 +81,7 @@ module.exports = class extends Generator {
 				choices : [
 					{name: 'None', value: 'none'}, 
 					{name: 'RabbitMQ', value: 'rabbit'}, 
-					{name: 'Apache Kafka', value: 'kafka'}
+					{name: 'Apache Kafka', value: 'kafka'}, 
 					{name: 'MQTT', value: 'mqtt'}
 				]
 			}, 

@@ -3,6 +3,7 @@ package <%=packageAmqp%>;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,9 @@ public class MqttConfig {
 	@Value("${<%=artifact%>.mqtt.port}")
 	private Integer port;
 
+	@Autowired
+	private MqttMessageListener messageListener;
+
 	@Bean("defaultMqttConfig")
 	@ConfigurationProperties(prefix = "<%=artifact%>.mqtt")
 	public MqttConnectOptions mqttConnectOptions() {
@@ -38,7 +42,7 @@ public class MqttConfig {
 	public MqttClient mqttClient() throws MqttException {
 		MqttClient mqttClient = new MqttClient("tcp://" + hostname + ":" + port, clientId);
 		mqttClient.connect(mqttConnectOptions());
-		mqttClient.subscribe(inputTopic, new MqttListener());
+		mqttClient.subscribe(inputTopic, messageListener);
 		return mqttClient;
 	}
 
