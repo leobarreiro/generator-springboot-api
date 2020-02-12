@@ -6,9 +6,9 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan({"<%= group %>"})
-public class <%= appname %> {
+public class ApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(<%= appname %>.class, args);
+		SpringApplication.run(ApiApplication.class, args);
 	}
 }

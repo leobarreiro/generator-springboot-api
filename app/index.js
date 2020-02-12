@@ -23,7 +23,7 @@ module.exports = class extends Generator {
 				validate: function(group) {
 					var validPack = typeof group == 'string' && group.indexOf('.') > 0;
 					if (!validPack) {
-						console.log('\n groupId must be a string and contains at least one point "."');
+						console.log('\n "groupId" must be a string and contains at least one point "."');
 					}
 					return validPack;
 				}
@@ -31,7 +31,16 @@ module.exports = class extends Generator {
 			{
 				type    : 'input',
 				name    : 'artifact', 
-				message : 'Enter a name for the artifactId: '
+				message : 'Enter a name for the artifactId: ', 
+				validate: function(artifact) {
+					var pattern = /^[a-z]{1,}[\-]{0,1}[a-z]{1,}$/g;
+					var validArtifactName = pattern.exec(artifact);
+					if (!validArtifactName) {
+						console.log('\n "artifactId" must contain only lowercase letters (from a to z) and perhaps may contain a dash "-"');
+					}
+					console.log(artifact.replace(/\W/g, ' ') + ' API');
+					return (validArtifactName != null);
+				}
 			}, 
 			{
 				type    : 'input',
@@ -120,8 +129,7 @@ module.exports = class extends Generator {
 			var packageDomain  		= packageRoot + '.domain';
 			var packageRepository 	= packageRoot + '.repository';
 			var packagePath 		= answers.group.split('.').join('/');
-			var appTitle 			= answers.artifact.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() + ' API'; });
-			var appName 			= appTitle.replace(/\w\S*/g, function(txt){ return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }).split(' ').join('');
+			var appTitle 			= artifactName.replace(/\W/g, ' ') + ' API';
 			var randomName 			= uniqueNamesGenerator({dictionaries: [names, starWars], separator: ' ', length: 2});
 			var randomSurname 		= uniqueNamesGenerator({dictionaries: [starWars, names], separator: ' ', length: 2});
 			var randomPasswd 		= (uniqueNamesGenerator({dictionaries: [starWars], separator: '', length: 1}) + (Math.random() * 10000).toString().substr(0, 4)).replace(' ', '');
@@ -370,9 +378,8 @@ module.exports = class extends Generator {
 			this.destinationRoot(packagePath);
 			this.fs.copyTpl(
 				this.templatePath('ApiApplication.java'),
-				this.destinationPath(appName + '.java'), 
+				this.destinationPath('ApiApplication.java'), 
 				{
-					appname		: appName, 
 					group		: packageRoot
 				}
 			);

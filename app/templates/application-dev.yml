@@ -39,7 +39,10 @@ spring:
       port: 27017
       database: <%=artifact%>
       username: <%=artifact%>
-      password: <%=randomPasswd%><% } if (postgres) { %>
+      password: <%=randomPasswd%><% } if (redis) { %>
+      redis:
+        host: localhost
+        port: 6379<% } if (postgres) { %>
   datasource:
     platform: postgresql
     url: jdbc:postgresql://localhost:5432/postgres
