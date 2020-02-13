@@ -104,6 +104,7 @@ module.exports = class extends Generator {
 			var packageRoot 		= answers.group;
 			var artifactName 		= answers.artifact;
 			var appVersion 			= answers.version;
+			var portNumber 			= answers.port;
 			var redis 				= answers.options.includes('cache-redis');
 			var rabbit	 			= (answers.mqueue == 'rabbit');
 			var kafka 				= (answers.mqueue == 'kafka');
@@ -120,7 +121,6 @@ module.exports = class extends Generator {
 			var jpa 				= postgres;
 			var databaseJpa 		= (answers.database == 'postgres') ? 'POSTGRESQL' : 'MYSQL';
 			var databaseDialect 	= (answers.database == 'postgres') ? 'PostgreSQL9Dialect' : 'MysqlDialect';
-			var portNumber 			= answers.port;
 			var packageConfig 		= packageRoot + '.config';
 			var packageService 		= packageRoot + '.service';
 			var packageEndpoint 	= packageRoot + '.endpoint';
@@ -257,9 +257,12 @@ module.exports = class extends Generator {
 					apptitle			: appTitle, 
 					portNumber 			: portNumber, 
 					mongodb 			: mongodb, 
+					rabbit 				: rabbit, 
 					kafka 				: kafka, 
 					mqtt 				: mqtt, 
-					jpa 				: jpa
+					jpa 				: jpa, 
+					randomName 			: randomName, 
+					randomSurname 		: randomSurname
 				}
 			);
 

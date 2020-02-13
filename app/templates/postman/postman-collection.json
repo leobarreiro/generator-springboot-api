@@ -1,90 +1,374 @@
+artifact			: artifactName, 
+apptitle			: appTitle, 
+portNumber 			: portNumber, 
+mongodb 			: mongodb, 
+rabbit 				: rabbit, 
+kafka 				: kafka, 
+mqtt 				: mqtt, 
+jpa 				: jpa, 
+randomName 			: randomName, 
+randomSurname 		: randomSurname
+
 {
 	"info": {
-		"name": "<%=artifact%>-api",
+		"_postman_id": "c132fca9-a94d-47cf-9620-0d4f0947b9cd",
+		"name": "<%=apptitle%>",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "registry-save",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:8080/<%=artifact%>/registry/save?description=Saving a new Record on Database",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"springfield",
-						"registry",
-						"save"
-					],
-					"query": [
-						{
-							"key": "description",
-							"value": "Saving a new Record on Database"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "registry-update",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:8080/<%=artifact%>/registry/update/1?description=Saving a record not so new",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"springfield",
-						"registry",
-						"update",
-						"1"
-					],
-					"query": [
-						{
-							"key": "description",
-							"value": "Saving a record not so new"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "registry-list-all",
+			"name": "basic - hello",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "http://localhost:8080/<%=artifact%>/registry/list-all",
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/hello",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"127",
+						"0",
+						"0",
+						"1"
 					],
-					"port": "8080",
+					"port": "<%=portNumber%>",
 					"path": [
-						"springfield",
+						"<%=artifact%>",
+						"hello"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "basic - date-now",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/date-now",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "<%=portNumber%>",
+					"path": [
+						"<%=artifact%>",
+						"date-now"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "message - mqtt/send",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Lorenzo\", \n\t\"surname\": \"Snow\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/mqtt/send",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "<%=portNumber%>",
+					"path": [
+						"<%=artifact%>",
+						"mqtt",
+						"send"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "message - rabbit/send",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Lorenzo\", \n\t\"surname\": \"Snow\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/rabbit/send",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "<%=portNumber%>",
+					"path": [
+						"<%=artifact%>",
+						"rabbit",
+						"send"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "message - kafka/send",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Lorenzo\", \n\t\"surname\": \"Snow\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/kafka/send",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "<%=portNumber%>",
+					"path": [
+						"<%=artifact%>",
+						"kafka",
+						"send"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "mongo - person/new",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Joseph\", \n\t\"surname\": \"Snow\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/person/new",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "<%=portNumber%>",
+					"path": [
+						"<%=artifact%>",
+						"person",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "mongo - person/surname",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/person/surname/Snow",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "<%=portNumber%>",
+					"path": [
+						"<%=artifact%>",
+						"person",
+						"surname",
+						"Snow"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "mongo - person/remove",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/person/remove/5e459403ce0742000154162c",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "<%=portNumber%>",
+					"path": [
+						"<%=artifact%>",
+						"person",
+						"remove",
+						"5e459403ce0742000154162c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "postgres - registry/save",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"description\": \"Including a new registry\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/registry/save",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "<%=portNumber%>",
+					"path": [
+						"<%=artifact%>",
+						"registry",
+						"save"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "postgres - registry/update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 1, \n\t\"description\": \"Saving a registry not so new\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/registry/update",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "<%=portNumber%>",
+					"path": [
+						"<%=artifact%>",
+						"registry",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "postgres - registry/list-all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/registry/list-all",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "<%=portNumber%>",
+					"path": [
+						"<%=artifact%>",
 						"registry",
 						"list-all"
 					]
@@ -94,7 +378,7 @@
 			"response": []
 		},
 		{
-			"name": "registry-delete",
+			"name": "postgres - registry/remove",
 			"request": {
 				"method": "DELETE",
 				"header": [],
@@ -103,71 +387,26 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8080/<%=artifact%>/registry/remove/2",
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/registry/remove/1",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"127",
+						"0",
+						"0",
+						"1"
 					],
-					"port": "8080",
+					"port": "<%=portNumber%>",
 					"path": [
-						"springfield",
+						"<%=artifact%>",
 						"registry",
 						"remove",
-						"2"
+						"1"
 					]
 				},
 				"description": "Delete a record from database."
 			},
 			"response": []
-		},
-		{
-			"name": "hello",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:8080/<%=artifact%>/hello",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"springfield",
-						"hello"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "date-now",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:8080/<%=artifact%>/date/now",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"springfield",
-						"date",
-						"now"
-					]
-				}
-			},
-			"response": []
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }
