@@ -2,7 +2,7 @@
 curl -X GET http://localhost:<%=portNumber%>/<%=artifact%>/hello
 
 # Date-now
-curl -X GET http://localhost:<%=portNumber%>/<%=artifact%>/date/now <% if (rabbit) { %>
+curl -X GET http://localhost:<%=portNumber%>/<%=artifact%>/date-now <% if (rabbit) { %>
 
 # Rabbit
 curl -X POST -H "Content-type: application/json" -d "{\"name\": \"<%=randomName%>\", \"surname\": \"<%=randomSurname%>\"}" http://localhost:<%=portNumber%>/<%=artifact%>/rabbit/send <% } if (kafka) { %>
@@ -26,14 +26,14 @@ curl -X GET http://localhost:<%=portNumber%>/<%=artifact%>/registry/list-all
 curl -X DELETE http://localhost:<%=portNumber%>/<%=artifact%>/registry/remove/1 <% } if (mongodb) { %>
 
 # Mongo - List by Surname
-curl -X GET http://localhost:<%=portNumber%>/<%=artifact%>/persons/surname/[surname]
+curl -X GET http://localhost:<%=portNumber%>/<%=artifact%>/person/surname/[surname]
 
 # Mongo - Save a new person
-curl -X POST http://localhost:<%=portNumber%>/<%=artifact%>/persons/new -d "{\"name\": \"<%=randomName%>\", \"surname\": \"<%=randomSurname%>\"}"
+curl -X POST http://localhost:<%=portNumber%>/<%=artifact%>/person/new -d "{\"name\": \"<%=randomName%>\", \"surname\": \"<%=randomSurname%>\"}"
 
 # Mongo - Update a person
-curl -X PUT http://localhost:<%=portNumber%>/<%=artifact%>/persons/update -d "{\"id\": \"[uuid]\", \"name\": \"<%=randomName%>\", \"surname\": \"<%=randomSurname%>\"}"
+curl -X PUT http://localhost:<%=portNumber%>/<%=artifact%>/person/update -d "{\"id\": \"[uuid]\", \"name\": \"<%=randomName%>\", \"surname\": \"<%=randomSurname%>\"}"
 
 # Mongo - Delete a person
-curl -X DELETE http://localhost:<%=portNumber%>/<%=artifact%>/persons/remove/[id]
+curl -X DELETE http://localhost:<%=portNumber%>/<%=artifact%>/person/remove/[id]
 <% } %>

@@ -36,9 +36,6 @@ services:
       - influxdb:influxdb<% } if (metricsinflux) { %>
   influxdb:
     image: influxdb:1.7.5-alpine
-    ports: 
-      - 8086
-      - 8083
     networks:
       - backend
     volumes:
@@ -57,8 +54,6 @@ services:
         constraints: [node.role == manager]<% } if (postgres) { %>
   postgres:
     image: postgres:11.2-alpine
-    ports: 
-      - 5432
     networks:
       - backend
     volumes:
@@ -79,8 +74,6 @@ services:
         constraints: [node.role == manager]<% } if (redis) { %>
   redis:
     image: redis:5.0.4-alpine
-    ports: 
-      - 6379
     networks:
       - backend
     volumes:
@@ -97,8 +90,6 @@ services:
       replicas: 1<% } if (mongodb) { %>
   mongodb:
     image: bitnami/mongodb:4.1
-    ports: 
-      - 27017
     environment:
       - MONGODB_USERNAME=<%=artifact%>
       - MONGODB_PASSWORD=<%=randomPasswd%>
@@ -122,7 +113,6 @@ services:
   rabbitmq:
     image: rabbitmq:3.7.14-management-alpine
     ports: 
-      - 5672
       - 15672:15672
     environment: 
       - RABBITMQ_DEFAULT_USER=<%=artifact%>
@@ -145,9 +135,6 @@ services:
         constraints: [node.role == manager]<% } if (kafka) { %>
   kafka:
     image: spotify/kafka
-    ports: 
-      - 2181
-      - 9092
     environment: 
       - ADVERTISED_HOST=localhost
       - ADVERTISED_PORT=9092
@@ -167,9 +154,6 @@ services:
         constraints: [node.role == manager]<% } if (mqtt) { %>
   mqtt:
     image: eclipse-mosquitto:1.6.8
-    ports: 
-      - 1883
-      - 9001
     networks:
       - message
     deploy:

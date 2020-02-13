@@ -40,10 +40,9 @@ public class ApiBaseEndpoint {
 		return new ResponseEntity<>(service.hello(), HttpStatus.OK);
 	}
 
-	@GetMapping(path = "/date/now")
-	@ResponseBody
-	public String localDateNow() {
-		return service.localDate();
+	@GetMapping(path = "/date-now")
+	public ResponseEntity<String> localDateNow() {
+		return new ResponseEntity<>(service.localDate(), HttpStatus.OK);
 	}<% if (rabbit) {%>
 		
 	@PostMapping(path = "/rabbit/send")
@@ -68,51 +67,47 @@ public class ApiBaseEndpoint {
 	}<%} if (jpa) { %>
 		
 	@GetMapping(path = "/registry/list-all")
-	@ResponseBody
-	public List<Registry> listAllRegistries() {
-		return jpaService.findAll();
+	public ResponseEntity<List<Registry>> listAllRegistries() {
+		return new ResponseEntity<>(jpaService.findAll(), HttpStatus.OK);
 	}
 
-	@PostMapping(path = "/registries/save")
-	@ResponseBody
-	public Registry saveRegistry(@PathParam("description") String description) {
-		Registry reg = jpaService.save(description);
-		return reg;
+	@PostMapping(path = "/registry/save")
+	public ResponseEntity<Registry> saveRegistry(@RequestBody Registry registry) {
+		Registry reg = jpaService.save(registry);
+		return new ResponseEntity<>(reg, HttpStatus.OK);
 	}
 
-	@PutMapping(path = "/registries/update/{id}")
-	@ResponseBody
-	public Registry updateRegistry(@PathVariable("id") Long id, @PathParam("description") String description) {
-		Registry reg = jpaService.update(id, description);
-		return reg;
+	@PutMapping(path = "/registry/update")
+	public ResponseEntity<Registry> updateRegistry(@RequestBody Registry registry) {
+		Registry reg = jpaService.update(registry);
+		return new ResponseEntity<>(reg, HttpStatus.OK);
 	}
 
-	@DeleteMapping(path = "registries/remove/{id}")
-	@ResponseBody
-	public String deleteRegistry(@PathVariable("id") Long id) {
+	@DeleteMapping(path = "registry/remove/{id}")
+	public ResponseEntity<String> deleteRegistry(@PathVariable("id") Long id) {
 		jpaService.delete(id);
-		return "Registry deleted";
+		return new ResponseEntity<>("Registry deleted", HttpStatus.OK);
 	}<% } if (mongodb) { %>
 	
-	@GetMapping(path = "/persons/surname/{surname}")
+	@GetMapping(path = "/person/surname/{surname}")
 	@ResponseBody
 	public List<Person> listPersonsBySurname(@PathVariable("surname") String surname) {
 		return personService.findBySurname(surname);
 	}
 
-	@PostMapping(path = "/persons/new")
+	@PostMapping(path = "/person/new")
 	@ResponseBody
 	public Person savePerson(@RequestBody Person person) {
 		return personService.save(person);
 	}
 
-	@PutMapping(path = "/persons/update")
+	@PutMapping(path = "/person/update")
 	@ResponseBody
 	public Person updateRegistry(@RequestBody Person person) {
 		return personService.save(person);
 	}
 
-	@DeleteMapping(path = "persons/remove/{id}")
+	@DeleteMapping(path = "person/remove/{id}")
 	@ResponseBody
 	public String deleteRegistry(@PathVariable("id") String id) {
 		personService.delete(id);

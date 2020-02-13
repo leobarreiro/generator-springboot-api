@@ -1,5 +1,6 @@
 package <%= packageService %>;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,17 +20,17 @@ public class RegistryService {
 		return repo.findAll();
 	}
 
-	public Registry save(String description) {
-		Registry reg = Registry.builder().description(description).build();
-		repo.save(reg);
-		return reg;
+	public Registry save(Registry registry) {
+		repo.save(registry);
+		return registry;
 	}
 
-	public Registry update(Long id, String description) {
-		Optional<Registry> opt = repo.findById(id);
+	public Registry update(Registry registry) {
+		Optional<Registry> opt = repo.findById(registry.getId());
 		if (opt.isPresent()) {
 			Registry reg = opt.get();
-			reg.setDescription(description);
+			reg.setDescription(registry.getDescription());
+			reg.setInstantTime(Calendar.getInstance().getTime());
 			repo.save(reg);
 			return reg;
 		} else {

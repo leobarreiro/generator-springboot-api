@@ -38,7 +38,6 @@ module.exports = class extends Generator {
 					if (!validArtifactName) {
 						console.log('\n "artifactId" must contain only lowercase letters (from a to z) and perhaps may contain a dash "-"');
 					}
-					console.log(artifact.replace(/\W/g, ' ') + ' API');
 					return (validArtifactName != null);
 				}
 			}, 
