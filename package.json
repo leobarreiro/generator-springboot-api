@@ -1,6 +1,6 @@
 {
   "name": "generator-springboot-api",
-  "version": "0.0.10",
+  "version": "1.0.0",
   "description": "SpringBoot REST API Generator",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "docker",
     "docker stack",
     "maven",
-    "javaleo.org"
+    "botzcamp.com"
   ],
   "author": "Leopoldo B Barreiro",
   "license": "MIT",

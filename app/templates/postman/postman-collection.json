@@ -1,14 +1,3 @@
-artifact			: artifactName, 
-apptitle			: appTitle, 
-portNumber 			: portNumber, 
-mongodb 			: mongodb, 
-rabbit 				: rabbit, 
-kafka 				: kafka, 
-mqtt 				: mqtt, 
-jpa 				: jpa, 
-randomName 			: randomName, 
-randomSurname 		: randomSurname
-
 {
 	"info": {
 		"_postman_id": "c132fca9-a94d-47cf-9620-0d4f0947b9cd",
@@ -61,7 +50,7 @@ randomSurname 		: randomSurname
 				}
 			},
 			"response": []
-		},
+		}<% if (mqtt) { %>,
 		{
 			"name": "message - mqtt/send",
 			"request": {
@@ -76,7 +65,7 @@ randomSurname 		: randomSurname
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Lorenzo\", \n\t\"surname\": \"Snow\"\n}",
+					"raw": "{\n\t\"name\": \"<%=randomName%>\", \n\t\"surname\": \"<%=randomSurname%>\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -101,7 +90,7 @@ randomSurname 		: randomSurname
 				}
 			},
 			"response": []
-		},
+		}<% } if (rabbit) { %>,
 		{
 			"name": "message - rabbit/send",
 			"request": {
@@ -116,7 +105,7 @@ randomSurname 		: randomSurname
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Lorenzo\", \n\t\"surname\": \"Snow\"\n}",
+					"raw": "{\n\t\"name\": \"<%=randomName%>\", \n\t\"surname\": \"<%=randomSurname%>\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -141,7 +130,7 @@ randomSurname 		: randomSurname
 				}
 			},
 			"response": []
-		},
+		}<% } if (kafka) { %>,
 		{
 			"name": "message - kafka/send",
 			"request": {
@@ -156,7 +145,7 @@ randomSurname 		: randomSurname
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Lorenzo\", \n\t\"surname\": \"Snow\"\n}",
+					"raw": "{\n\t\"name\": \"<%=randomName%>\", \n\t\"surname\": \"<%=randomSurname%>\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -181,7 +170,7 @@ randomSurname 		: randomSurname
 				}
 			},
 			"response": []
-		},
+		}<% } if (mongodb) { %>,
 		{
 			"name": "mongo - person/new",
 			"request": {
@@ -196,7 +185,7 @@ randomSurname 		: randomSurname
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Joseph\", \n\t\"surname\": \"Snow\"\n}",
+					"raw": "{\n\t\"name\": \"<%=randomName%>\", \n\t\"surname\": \"<%=randomSurname%>\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -228,7 +217,7 @@ randomSurname 		: randomSurname
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/person/surname/Snow",
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/person/surname/<%=randomSurname%>",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -241,7 +230,7 @@ randomSurname 		: randomSurname
 						"<%=artifact%>",
 						"person",
 						"surname",
-						"Snow"
+						"<%=randomSurname%>"
 					]
 				}
 			},
@@ -253,7 +242,7 @@ randomSurname 		: randomSurname
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/person/remove/5e459403ce0742000154162c",
+					"raw": "http://127.0.0.1:<%=portNumber%>/<%=artifact%>/person/remove/{type-the-id-here}}",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -266,12 +255,12 @@ randomSurname 		: randomSurname
 						"<%=artifact%>",
 						"person",
 						"remove",
-						"5e459403ce0742000154162c"
+						"{type-the-id-here}"
 					]
 				}
 			},
 			"response": []
-		},
+		}<% } if (jpa) { %>,
 		{
 			"name": "postgres - registry/save",
 			"request": {
@@ -406,7 +395,7 @@ randomSurname 		: randomSurname
 				"description": "Delete a record from database."
 			},
 			"response": []
-		}
+		}<% } %>
 	],
 	"protocolProfileBehavior": {}
 }
