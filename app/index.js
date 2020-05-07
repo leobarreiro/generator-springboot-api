@@ -18,8 +18,8 @@ module.exports = class extends Generator {
 			{
 				type    : 'input',
 				name    : 'group', 
-				default : 'com.botzcamp.api', 
-				message : 'Please type the groupId [com.botzcamp.api]: ', 
+				default : 'com.quasarbot.api', 
+				message : 'Please type the groupId [com.quasarbot.api]: ', 
 				validate: function(group) {
 					var validPack = typeof group == 'string' && group.indexOf('.') > 0;
 					if (!validPack) {
@@ -44,8 +44,8 @@ module.exports = class extends Generator {
 			{
 				type    : 'input',
 				name    : 'version', 
-				default : '0.0.1-SNAPSHOT', 
-				message : 'Please type the API version [0.0.1-SNAPSHOT]: ', 
+				default : '1.0.0-SNAPSHOT', 
+				message : 'Please type the API version [1.0.0-SNAPSHOT]: ', 
 				validate: function(version) {
 					var validVersion = typeof version == 'string' && version.indexOf('.') > 0;
 					if (!validVersion) {
@@ -58,19 +58,19 @@ module.exports = class extends Generator {
 				type	: 'rawlist', 
 				name	: 'container', 
 				default : 'undertow', 
-				message : 'Select a embedded server [1 = undertow]: ', 
+				message : 'Select an embedded server [1 = undertow]: ', 
 				choices : ['undertow', 'jetty', 'tomcat']
 			}, 
 			{
 				type	: 'number', 
 				name	: 'port', 
 				default : '8080', 
-				message : 'Enter the port number to your micro-service [8080]: '
+				message : 'Type the port number to your micro-service [8080]: '
 			}, 
 			{
 				type	: 'checkbox', 
 				name	: 'options',  
-				message : 'Select the aditional options as below: ', 
+				message : 'Select additional options as desired: ', 
 				radio 	: true, 
 				choices : [
 					{name: 'Devtools', value: 'devtools'}, 
