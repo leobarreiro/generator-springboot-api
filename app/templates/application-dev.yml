@@ -39,10 +39,11 @@ spring:
       port: 27017
       database: <%=artifact%>
       username: <%=artifact%>
+      authSource: <%=artifact%>
       password: <%=randomPasswd%><% } if (redis) { %>
-      redis:
-        host: localhost
-        port: 6379<% } if (postgres) { %>
+  redis:
+    host: localhost
+    port: 6379<% } if (postgres) { %>
   datasource:
     platform: postgresql
     url: jdbc:postgresql://localhost:5432/postgres
@@ -86,13 +87,13 @@ spring:
           destination: <%=artifact%>-output
           contentType: application/json
           producer:
-            headerMode: raw
+            headerMode: headers
         <%=artifact%>_input:
           destination: <%=artifact%>-input
           contentType: application/json
           consumer:
             maxAttempts: 3
-            headerMode: raw<% } if (mqtt) { %>
+            headerMode: headers<% } if (mqtt) { %>
 <%=artifact%>:
   messages:
     output-queue: <%=artifact%>/output

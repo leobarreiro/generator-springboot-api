@@ -39,6 +39,7 @@ spring:
       port: 27017
       database: <%=artifact%>
       username: <%=artifact%>
+      authSource: <%=artifact%>
       password: <%=randomPasswd%><% } if (redis) { %>
   redis:
     host: <%=artifact%>_redis
@@ -61,7 +62,7 @@ spring:
             non_contextual_creation: true<% } if (rabbit) { %>
   rabbitmq:
     host: <%=artifact%>_rabbitmq
-    port: 5672
+    port: 15672
     username: <%=artifact%>
     password: <%=randomPasswd%>
     virtual-host: /
@@ -86,13 +87,13 @@ spring:
           destination: <%=artifact%>-output
           contentType: application/json
           producer:
-            headerMode: raw
+            headerMode: headers
         <%=artifact%>_input:
           destination: <%=artifact%>-input
           contentType: application/json
           consumer:
             maxAttempts: 3
-            headerMode: raw<% } if (mqtt) { %>
+            headerMode: headers<% } if (mqtt) { %>
 <%=artifact%>:
   messages:
     output-queue: <%=artifact%>/output

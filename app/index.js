@@ -44,8 +44,8 @@ module.exports = class extends Generator {
 			{
 				type    : 'input',
 				name    : 'version', 
-				default : '1.0.0-SNAPSHOT', 
-				message : 'Please type the API version [1.0.0-SNAPSHOT]: ', 
+				default : '0.1.0', 
+				message : 'Please type the API version [0.1.0]: ', 
 				validate: function(version) {
 					var validVersion = typeof version == 'string' && version.indexOf('.') > 0;
 					if (!validVersion) {
@@ -195,8 +195,8 @@ module.exports = class extends Generator {
 				}
 			);
 			this.fs.copyTpl(
-				this.templatePath('docker/docker-compose.yml'),
-				this.destinationPath('docker-compose.yml'), 
+				this.templatePath('docker/server-compose.yml'),
+				this.destinationPath('server-compose.yml'), 
 				{
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
@@ -213,8 +213,43 @@ module.exports = class extends Generator {
 				}
 			);
 			this.fs.copyTpl(
-				this.templatePath('docker/stack.sh'),
-				this.destinationPath('stack.sh'), 
+				this.templatePath('docker/dev-compose.yml'),
+				this.destinationPath('dev-compose.yml'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					portNumber 			: portNumber, 
+					swagger 			: swagger, 
+					mongodb 			: mongodb, 
+					metricsinflux 		: metricsinflux, 
+					postgres			: postgres, 
+					redis 				: redis, 
+					rabbit 				: rabbit, 
+					kafka 				: kafka, 
+					mqtt 				: mqtt, 
+					randomPasswd 		: randomPasswd
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('docker/server-stack.sh'),
+				this.destinationPath('server-stack.sh'), 
+				{
+					artifact			: artifactName, 
+					apptitle			: appTitle, 
+					portNumber 			: portNumber, 
+					swagger 			: swagger, 
+					mongodb 			: mongodb, 
+					metricsinflux 		: metricsinflux, 
+					postgres			: postgres, 
+					redis 				: redis, 
+					rabbit 				: rabbit, 
+					kafka				: kafka, 
+					mqtt 				: mqtt
+				}
+			);
+			this.fs.copyTpl(
+				this.templatePath('docker/dev-stack.sh'),
+				this.destinationPath('dev-stack.sh'), 
 				{
 					artifact			: artifactName, 
 					apptitle			: appTitle, 
