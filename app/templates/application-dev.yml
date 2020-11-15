@@ -38,8 +38,8 @@ spring:
       host: localhost
       port: 27017
       database: <%=artifact%>
+      authenticationDatabase: <%=artifact%>
       username: <%=artifact%>
-      authSource: <%=artifact%>
       password: <%=randomPasswd%><% } if (redis) { %>
   redis:
     host: localhost
@@ -87,13 +87,13 @@ spring:
           destination: <%=artifact%>-output
           contentType: application/json
           producer:
-            headerMode: headers
+            headerMode: none
         <%=artifact%>_input:
           destination: <%=artifact%>-input
           contentType: application/json
           consumer:
             maxAttempts: 3
-            headerMode: headers<% } if (mqtt) { %>
+            headerMode: none<% } if (mqtt) { %>
 <%=artifact%>:
   messages:
     output-queue: <%=artifact%>/output

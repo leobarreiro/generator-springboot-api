@@ -1,6 +1,6 @@
 logging:
   level:
-    root: WARN
+    root: INFO
 spring:
   application:
     name: <%=artifact%>
