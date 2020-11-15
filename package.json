@@ -1,6 +1,6 @@
 {
   "name": "generator-springboot-api",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "SpringBoot REST API Generator",
   "main": "index.js",
   "scripts": {
@@ -14,11 +14,11 @@
     "yeoman-generator",
     "spring-boot",
     "springboot",
-    "java 8",
+    "java 11",
     "docker",
     "docker stack",
     "maven",
-    "botzcamp.com"
+    "quasarbot.com"
   ],
   "author": "Leopoldo B Barreiro",
   "license": "MIT",
