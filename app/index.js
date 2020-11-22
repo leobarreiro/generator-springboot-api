@@ -59,7 +59,7 @@ module.exports = class extends Generator {
 				name	: 'container', 
 				default : 'undertow', 
 				message : 'Select an embedded server [1 = undertow]: ', 
-				choices : ['undertow', 'jetty', 'tomcat']
+				choices : ['undertow', 'jetty', 'tomcat', 'netty (webflux)']
 			}, 
 			{
 				type	: 'number', 
@@ -98,13 +98,15 @@ module.exports = class extends Generator {
 				name	: 'database', 
 				default : 'none', 
 				message : 'Please pick a database [1 = none]: ', 
-				choices : ['none', 'postgres']
+				choices : ['none', 'postgres', 'oracle']
 			}
 		]).then((answers) => {
 			var packageRoot 		= answers.group;
 			var artifactName 		= answers.artifact;
 			var appVersion 			= answers.version;
 			var portNumber 			= answers.port;
+			var containerDep 		= (answers.container == 'netty (webflux)') ? 'webflux' : answers.container; 
+			var webflux 			= (containerDep == 'webflux');
 			var redis 				= answers.options.includes('cache-redis');
 			var rabbit	 			= (answers.mqueue == 'rabbit');
 			var kafka 				= (answers.mqueue == 'kafka');
@@ -118,9 +120,10 @@ module.exports = class extends Generator {
 			var metricsinflux 		= answers.options.includes('metrics-influx');
 			var mongodb 			= answers.options.includes('mongodb');
 			var postgres 			= answers.database == 'postgres';
-			var jpa 				= postgres;
-			var databaseJpa 		= (answers.database == 'postgres') ? 'POSTGRESQL' : 'MYSQL';
-			var databaseDialect 	= (answers.database == 'postgres') ? 'PostgreSQL9Dialect' : 'MysqlDialect';
+			var oracle 				= answers.database == 'oracle';
+			var jpa 				= (postgres || oracle);
+			var databaseJpa 		= (answers.database == 'postgres') ? 'POSTGRESQL' : 'ORACLE';
+			var databaseDialect 	= (answers.database == 'postgres') ? 'PostgreSQL9Dialect' : 'Oracle10gDialect';
 			var packageConfig 		= packageRoot + '.config';
 			var packageService 		= packageRoot + '.service';
 			var packageEndpoint 	= packageRoot + '.endpoint';
@@ -145,7 +148,7 @@ module.exports = class extends Generator {
 					group				: packageRoot, 
 					appVersion 			: appVersion, 
 					cloud 				: cloud, 
-					container			: answers.container, 
+					containerDep		: containerDep, 
 					apptitle			: appTitle, 
 					swagger 			: swagger, 
 					mongodb 			: mongodb, 
@@ -154,6 +157,7 @@ module.exports = class extends Generator {
 					metricsinflux 		: metricsinflux, 
 					jpa 				: jpa, 
 					postgres			: postgres, 
+					oracle 				: oracle, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
 					kafka 				: kafka, 
@@ -171,6 +175,7 @@ module.exports = class extends Generator {
 					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
+					oracle 				: oracle, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
 					kafka 				: kafka, 
@@ -188,6 +193,7 @@ module.exports = class extends Generator {
 					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
+					oracle 				: oracle, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
 					kafka				: kafka, 
@@ -205,6 +211,7 @@ module.exports = class extends Generator {
 					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
+					oracle 				: oracle, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
 					kafka 				: kafka, 
@@ -223,6 +230,7 @@ module.exports = class extends Generator {
 					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
+					oracle 				: oracle, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
 					kafka 				: kafka, 
@@ -241,6 +249,7 @@ module.exports = class extends Generator {
 					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
+					oracle 				: oracle, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
 					kafka				: kafka, 
@@ -258,6 +267,7 @@ module.exports = class extends Generator {
 					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
+					oracle 				: oracle, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
 					kafka				: kafka, 
@@ -275,6 +285,7 @@ module.exports = class extends Generator {
 					mongodb 			: mongodb, 
 					metricsinflux 		: metricsinflux, 
 					postgres			: postgres, 
+					oracle 				: oracle, 
 					redis 				: redis, 
 					rabbit 				: rabbit, 
 					kafka				: kafka, 
@@ -343,6 +354,7 @@ module.exports = class extends Generator {
 					jpa 			: jpa, 
 					databaseJpa 	: databaseJpa, 
 					postgres		: postgres, 
+					oracle 			: oracle, 
 					databaseDialect : databaseDialect, 
 					randomPasswd 	: randomPasswd
 				}
@@ -369,6 +381,7 @@ module.exports = class extends Generator {
 					jpa 			: jpa, 
 					databaseJpa 	: databaseJpa, 
 					postgres		: postgres, 
+					oracle 			: oracle, 
 					databaseDialect : databaseDialect, 
 					randomPasswd 	: randomPasswd 
 				}
@@ -395,6 +408,7 @@ module.exports = class extends Generator {
 					jpa 			: jpa, 
 					databaseJpa 	: databaseJpa, 
 					postgres		: postgres, 
+					oracle 			: oracle, 
 					databaseDialect : databaseDialect, 
 					randomPasswd 	: randomPasswd
 				}
@@ -457,6 +471,12 @@ module.exports = class extends Generator {
 					{
 						packageConfig: packageConfig
 					}
+				);
+			}
+			if (webflux) {
+				this.fs.copyTpl(
+					this.templatePath('webflux/NettyPortCustom.java'), 
+					this.destinationPath('NettyPortCustom.java')
 				);
 			}
 

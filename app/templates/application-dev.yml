@@ -49,6 +49,12 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: <%=randomPasswd%>
+    continue-on-error: true<% } if (oracle) {%>
+  datasource:
+    platform: oracle
+    url: jdbc:oracle:thin:@localhost:1521:XE
+    username: system
+    password: oracle
     continue-on-error: true<% } if (jpa) { %>
   jpa:
     hibernate:

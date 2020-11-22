@@ -26,17 +26,17 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId><% if (container != 'tomcat') { %>
+			<artifactId>spring-boot-starter-web</artifactId><% if (containerDep != 'tomcat') { %>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
 			</exclusions><% } %>
-		</dependency><% if (container != 'tomcat') { %>
+		</dependency><% if (containerDep != 'tomcat') { %>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-<%= container %></artifactId>
+			<artifactId>spring-boot-starter-<%= containerDep %></artifactId>
 		</dependency><% } if (devtools) { %>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -76,6 +76,10 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
+		</dependency><% } if (oracle) {%>
+		<dependency>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc10</artifactId>
 		</dependency><% } if (mongodb) { %>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

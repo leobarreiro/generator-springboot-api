@@ -41,6 +41,29 @@ services:<% if (metricsinflux) { %>
       mode: replicated
       replicas: 1
       placement:
+        constraints: [node.role == manager]<% } if (oracle) {%>
+  oracle:
+    image: wnameless/oracle-xe-11g-r2
+    ports: 
+      - 1521:1521
+    networks:
+      - backend
+#    volumes:
+#      - oracledata:/var/lib/postgresql/data
+    environment:
+      - ORACLE_ALLOW_REMOTE=true
+      - ORACLE_DISABLE_ASYNCH_IO=true
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.50'
+          memory: 256M
+      mode: replicated
+      replicas: 1
+      placement:
         constraints: [node.role == manager]<% } if (redis) { %>
   redis:
     image: redis:5.0.4-alpine
@@ -157,4 +180,5 @@ volumes: <% if (postgres) { %>
   redisdata: <% } if (mongodb) { %>
   mongodbdata: <% } if (rabbit) { %>
   rabbitdata: <% } if (metricsinflux) { %>
-  influxdbdata: <% } %>
+  influxdbdata: <% } if (oracle) { %>
+  oracledata: <% } %>
