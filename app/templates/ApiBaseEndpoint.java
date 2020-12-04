@@ -19,14 +19,14 @@ import <%=packageDomain%>.Person;
 import <%=packageService%>.ApiBaseService;
 
 <% if (jpa) { %>import <%=packageService%>.RegistryService;
-import <%=packageDomain%>.Registry;<% } if (mongodb) { %>
+import <%=packageDomain%>.Registry;<% } if (mongo) { %>
 import <%=packageService%>.PersonService;<% } %>
 
 @RestController
 public class ApiBaseEndpoint {
 	
 	@Autowired
-	private ApiBaseService service;<% if (mongodb) { %>
+	private ApiBaseService service;<% if (mongo) { %>
 
 	@Autowired
 	private PersonService personService;<% } if (jpa) { %>
@@ -86,7 +86,7 @@ public class ApiBaseEndpoint {
 	public ResponseEntity<String> deleteRegistry(@PathVariable("id") Long id) {
 		jpaService.delete(id);
 		return new ResponseEntity<>("Registry deleted", HttpStatus.OK);
-	}<% } if (mongodb) { %>
+	}<% } if (mongo) { %>
 	
 	@GetMapping(path = "/person/surname/{surname}")
 	@ResponseBody

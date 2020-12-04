@@ -29,6 +29,8 @@
   "dependencies": {
     "decamelize": "^1.2.0",
     "ejs": "^2.6.1",
+    "promise": "^8.1.0",
+    "prompt": "^1.0.0",
     "prompt-checkbox": "^2.2.0",
     "unique-names-generator": "^4.1.1",
     "uppercamelcase": "^3.0.0",

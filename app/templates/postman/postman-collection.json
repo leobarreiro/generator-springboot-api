@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "c132fca9-a94d-47cf-9620-0d4f0947b9cd",
-		"name": "<%=apptitle%>",
+		"name": "<%=appTitle%>",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -170,7 +170,7 @@
 				}
 			},
 			"response": []
-		}<% } if (mongodb) { %>,
+		}<% } if (mongo) { %>,
 		{
 			"name": "mongo - person/new",
 			"request": {

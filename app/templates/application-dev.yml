@@ -1,6 +1,6 @@
 logging:
   level:
-    <%= packageroot %>: DEBUG
+    <%= packageRoot %>: DEBUG
     org.springframework.boot.context: DEBUG
 server:
   compression:
@@ -13,9 +13,9 @@ springfox:
     swagger.v2.path: /v2/api-docs
     info:
       title: 
-      description: <%= apptitle %> Docs.
+      description: <%= appTitle %> Docs.
       version: 1.0
-    base-package: <%= packageroot %><% } %><% if (actuator || metricsinflux) { %>
+    base-package: <%= packageRoot %><% } %><% if (actuator || metricsinflux) { %>
 management:
   server:
     port: 9090
@@ -32,7 +32,7 @@ spring:
   messages:
     basename: i18n/messages<% if (redis) { %>
   cache:
-    type: redis<% } if (mongodb) { %>
+    type: redis<% } if (mongo) { %>
   data:
     mongodb:
       host: localhost
@@ -110,4 +110,11 @@ spring:
     connectionTimeout: 10
     clientId: <%=artifact%>-client-mqtt
     hostname: 127.0.0.1
-    port: 1883<% } %>
+    port: 1883<% } if (keycloak) { %>
+keycloak:
+  realm: <%=kcRealm%>
+  auth-server-url: <%=kcUrl%>
+  ssl-required: external
+  resource: <%=kcClientId%>
+  credentials:
+    secret: <%=kcClientSecret%> <% } %>

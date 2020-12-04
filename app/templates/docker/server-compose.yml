@@ -15,7 +15,7 @@ services:
           memory: 256M
       mode: replicated
       replicas: 1
-    depends_on: <% if (mongodb) { %>
+    depends_on: <% if (mongo) { %>
       - mongodb<% } if (rabbit) { %>
       - rabbitmq<% } if (kafka) { %>
       - kafka<% } if (redis) { %>
@@ -24,10 +24,10 @@ services:
       - postgres<% } if (metricsinflux) { %>
       - influxdb<% } %>
     networks:
-      - frontend<% if (postgres || mongodb || metricsinflux) { %>
+      - frontend<% if (postgres || mongo || metricsinflux) { %>
       - backend<% } if (kafka || rabbit || mqtt) { %>
       - message<% } %>
-    links: <% if (mongodb) { %>
+    links: <% if (mongo) { %>
       - mongodb:mongodb<% } if (postgres) { %>
       - postgres:postgres<% } if (redis) { %>
       - redis:redis<% } if (kafka) { %>
@@ -93,7 +93,7 @@ services:
           cpus: '0.50'
           memory: 256M
       mode: replicated
-      replicas: 1<% } if (mongodb) { %>
+      replicas: 1<% } if (mongo) { %>
   mongodb:
     image: bitnami/mongodb:4.1
     environment:
@@ -183,12 +183,12 @@ services:
       placement:
         constraints: [node.role == manager]<% } %>
 networks:
-  frontend:<% if (postgres || mongodb || metricsinflux) { %>
+  frontend:<% if (postgres || mongo || metricsinflux) { %>
   backend:<% } if (kafka || rabbit || mqtt) { %>
   message:<% } %>
 volumes: <% if (postgres) { %>
   postgresdata: <% } if (redis) { %>
-  redisdata: <% } if (mongodb) { %>
+  redisdata: <% } if (mongo) { %>
   mongodbdata: <% } if (rabbit) { %>
   rabbitdata: <% } if (metricsinflux) { %>
   influxdbdata: <% } %>

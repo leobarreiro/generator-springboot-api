@@ -82,7 +82,7 @@ services:<% if (metricsinflux) { %>
           cpus: '0.50'
           memory: 256M
       mode: replicated
-      replicas: 1<% } if (mongodb) { %>
+      replicas: 1<% } if (mongo) { %>
   mongodb:
     image: bitnami/mongodb:4.1
     environment:
@@ -172,12 +172,12 @@ services:<% if (metricsinflux) { %>
       placement:
         constraints: [node.role == manager]<% } %>
 networks:
-  frontend:<% if (postgres || mongodb || metricsinflux) { %>
+  frontend:<% if (postgres || mongo || metricsinflux) { %>
   backend:<% } if (kafka || rabbit || mqtt) { %>
   message:<% } %>
 volumes: <% if (postgres) { %>
   postgresdata: <% } if (redis) { %>
-  redisdata: <% } if (mongodb) { %>
+  redisdata: <% } if (mongo) { %>
   mongodbdata: <% } if (rabbit) { %>
   rabbitdata: <% } if (metricsinflux) { %>
   influxdbdata: <% } if (oracle) { %>

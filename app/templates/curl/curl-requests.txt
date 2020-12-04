@@ -23,7 +23,7 @@ curl -X PUT http://localhost:<%=portNumber%>/<%=artifact%>/registry/update/1 -d 
 curl -X GET http://localhost:<%=portNumber%>/<%=artifact%>/registry/list-all
 
 # Database Delete
-curl -X DELETE http://localhost:<%=portNumber%>/<%=artifact%>/registry/remove/1 <% } if (mongodb) { %>
+curl -X DELETE http://localhost:<%=portNumber%>/<%=artifact%>/registry/remove/1 <% } if (mongo) { %>
 
 # Mongo - List by Surname
 curl -X GET http://localhost:<%=portNumber%>/<%=artifact%>/person/surname/[surname]
