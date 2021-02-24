@@ -1,6 +1,6 @@
 {
   "name": "generator-springboot-api",
-  "version": "1.3.0",
+  "version": "1.4.3",
   "description": "SpringBoot REST API Generator",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
     "java 11",
     "docker",
     "docker stack",
+    "k8s",
     "maven",
     "quasarbot.com"
   ],

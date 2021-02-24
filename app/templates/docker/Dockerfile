@@ -1,4 +1,4 @@
-FROM fabric8/java-alpine-openjdk8-jre:1.6.5
+FROM adoptopenjdk/openjdk11:jre-11.0.10_9-ubuntu
 
 ENV JAVA_APP_JAR=@project.artifactId@-@project.version@.jar \
     TZ=America/Sao_Paulo \
@@ -9,3 +9,5 @@ ENV JAVA_APP_JAR=@project.artifactId@-@project.version@.jar \
     AB_OFF=true
 
 ADD $JAVA_APP_JAR /deployments/@project.artifactId@-@project.version@.jar
+
+CMD ["java", "-jar", "/deployments/@project.artifactId@-@project.version@.jar"]
