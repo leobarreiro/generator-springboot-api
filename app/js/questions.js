@@ -1,11 +1,12 @@
 const {keycloakQuestions} = require("./questions-keycloak.js");
+const {k8sQuestions} = require("./questions-k8s.js");
 
 const basicQuestions = [
 	{
 		type    : 'input',
 		name    : 'group', 
-		default : 'com.quasarbot.api', 
-		message : 'Please type the groupId [com.quasarbot.api]: ', 
+		default : 'com.mydomain.api', 
+		message : 'Please type the groupId [com.mydomain.api]: ', 
 		validate: function(group) {
 			var validPack = typeof group == 'string' && group.indexOf('.') > 0;
 			if (!validPack) {
@@ -17,7 +18,7 @@ const basicQuestions = [
 	{
 		type    : 'input',
 		name    : 'artifact', 
-		message : 'Enter the artifactId: ', 
+		message : 'ArtifactId: ', 
 		validate: function(artifact) {
 			var pattern = /^[a-z]{1,}[\-]{0,1}[a-z]{1,}$/g;
 			var validArtifactName = pattern.exec(artifact);
@@ -88,5 +89,5 @@ const basicQuestions = [
 	}
 ];
 
-exports.questions = [...basicQuestions, ...keycloakQuestions];
+exports.questions = [...basicQuestions, ...keycloakQuestions, ...k8sQuestions];
 

@@ -47,7 +47,13 @@ exports.answersConfig = function(answers) {
 		keycloak 			: answers.keycloak == 'yes', 
 		randomName 			: uniqueNamesGenerator({dictionaries: [names, starWars], separator: ' ', length: 2}),
 		randomSurname 		: uniqueNamesGenerator({dictionaries: [starWars, names], separator: ' ', length: 2}),
-		randomPasswd 		: (uniqueNamesGenerator({dictionaries: [starWars], separator: '', length: 1}) + (Math.random() * 10000).toString().substr(0, 4)).replace(' ', '')
+		randomPasswd 		: (uniqueNamesGenerator({dictionaries: [starWars], separator: '', length: 1}) + (Math.random() * 10000).toString().substr(0, 4)).replace(' ', ''),
+
+		generatek8s 		: answers.generatek8s == 'yes',
+		dockerRegistry 		: answers.dockerRegistry,
+		dockerNamespace 	: answers.dockerNamespace,
+		clusterNamespace 	: answers.clusterNamespace,
+		ingressHost 		: answers.ingressHost
 
 	};
 	return genConfig;

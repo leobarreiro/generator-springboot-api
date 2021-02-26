@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <%=artifact%>
+  labels:
+    group: leptoncli
+spec:
+  selector:
+    matchLabels:
+      app: <%=artifact%>
+  template:
+    metadata:
+      labels:
+        app: <%=artifact%>
+    spec:
+      imagePullSecrets:
+      - name: registry-pull
+      containers:
+      - image: <%=dockerRegistry%>/<%=dockerNamespace%>/<%=artifact%>:<%=appVersion%>
+        imagePullPolicy: "IfNotPresent"
+        name: <%=artifact%>
+        ports:
+         - containerPort: <%=portNumber%>
+         - containerPort: 9090
+        resources:
+          limits:
+            cpu: 1
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 192Mi
+

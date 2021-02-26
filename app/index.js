@@ -15,7 +15,10 @@ module.exports = class extends Generator {
 		this.prompt(questions).then((answers) => {
 			
 			let config = answersConfig(answers);
-			console.log(config);
+			
+			console.log("");
+			console.log("Generating the structure of your microservice...");
+			console.log("");
 
 			// root files
 			this.destinationRoot(config.artifact);
@@ -62,6 +65,25 @@ module.exports = class extends Generator {
 				this.destinationPath('standalone.sh'), 
 				config
 			);
+
+			if (config.generatek8s) {
+				this.destinationRoot('../k8s');
+				this.fs.copyTpl(
+					this.templatePath('k8s/01-deploy.yml'),
+					this.destinationPath('01-deploy.yml'), 
+					config
+				);
+				this.fs.copyTpl(
+					this.templatePath('k8s/02-service.yml'),
+					this.destinationPath('02-service.yml'), 
+					config
+				);
+				this.fs.copyTpl(
+					this.templatePath('k8s/03-ingress.yml'),
+					this.destinationPath('03-ingress.yml'), 
+					config
+				);
+			}
 
 			this.destinationRoot('../postman');
 			this.fs.copyTpl(

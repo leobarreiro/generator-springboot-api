@@ -157,18 +157,26 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${project.build.directory}</outputDirectory>
-							<resources>
+							<resources><% if (generatek8s) { %>
+								<resource>
+									<directory>src/k8s</directory>
+									<filtering>true</filtering>
+									<targetPath>k8s</targetPath>
+								</resource><% } %>
 								<resource>
 									<directory>src/docker</directory>
 									<filtering>true</filtering>
+									<targetPath>docker</targetPath>
 								</resource>
 								<resource>
 									<directory>src/postman</directory>
 									<filtering>true</filtering>
+									<targetPath>postman</targetPath>
 								</resource>
 								<resource>
 									<directory>src/curl</directory>
 									<filtering>true</filtering>
+									<targetPath>curl</targetPath>
 								</resource>
 							</resources>
 						</configuration>
