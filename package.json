@@ -1,6 +1,6 @@
 {
   "name": "generator-springboot-api",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "SpringBoot REST API Generator",
   "main": "index.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "promise": "^8.1.0",
     "prompt": "^1.0.0",
     "prompt-checkbox": "^2.2.0",
-    "unique-names-generator": "^4.1.1",
+    "unique-names-generator": "^4.6.0",
     "uppercamelcase": "^3.0.0",
     "yeoman-generator": "^3.2.0"
   },
