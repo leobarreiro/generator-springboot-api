@@ -107,21 +107,15 @@ module.exports = class extends Generator {
 				config
 			);
 			this.fs.copyTpl(
-				this.templatePath('application-dev.yml'),
-				this.destinationPath('application-dev.yml'), 
-				config
-			);
-			this.fs.copyTpl(
-				this.templatePath('application-stack.yml'),
-				this.destinationPath('application-stack.yml'), 
-				config
-			);
-			this.fs.copyTpl(
 				this.templatePath('bootstrap.yml'),
 				this.destinationPath('bootstrap.yml'), 
 				config
 			);
-			
+			this.fs.copyTpl(
+				this.templatePath('bootstrap-stack.yml'),
+				this.destinationPath('bootstrap-stack.yml'), 
+				config
+			);			
 			// i18n
 			this.destinationRoot('./i18n');
 			
@@ -152,13 +146,6 @@ module.exports = class extends Generator {
 				this.fs.copyTpl(
 					this.templatePath('jpa/JpaConfig.java'), 
 					this.destinationPath('JpaConfig.java'), 
-					config
-				);
-			}
-			if (config.swagger) {
-				this.fs.copyTpl(
-					this.templatePath('swagger/SwaggerConfig.java'), 
-					this.destinationPath('SwaggerConfig.java'), 
 					config
 				);
 			}
