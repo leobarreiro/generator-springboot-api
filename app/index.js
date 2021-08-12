@@ -107,13 +107,8 @@ module.exports = class extends Generator {
 				config
 			);
 			this.fs.copyTpl(
-				this.templatePath('bootstrap.yml'),
-				this.destinationPath('bootstrap.yml'), 
-				config
-			);
-			this.fs.copyTpl(
-				this.templatePath('bootstrap-stack.yml'),
-				this.destinationPath('bootstrap-stack.yml'), 
+				this.templatePath('application-stack.yml'),
+				this.destinationPath('application-stack.yml'), 
 				config
 			);			
 			// i18n

@@ -12,10 +12,10 @@ exports.k8sQuestions = [
 		when: (answers) => answers.generatek8s === 'yes', 
 		message: '  (k8s) - Please inform the docker registry: ',
 		validate: function (dockerRegistry) {
-			var pattern = /^([a-z]{1,}[\-]{0,1}[a-z]{1,}[\.]{0,1}[a-z]{1,}){1,}([\:]{1}[0-9]{3,5}){0,1}$/g;
+			var pattern = /^([a-z]{1,}[a-z0-9]{0,}[\-]{0,1}[a-z0-9]{1,}[\.]{0,1}[a-z]{1,}){1,}([\:]{1}[0-9]{3,5}){0,1}$/g;
 			var validRegistry = pattern.exec(dockerRegistry);
 			if (!validRegistry) {
-				console.log('\n "   ERROR: The docker registry must have a domain format and \'can have\' a port (p.e. registry.mydomain.com:443)');
+				console.log('\n "   ERROR: The docker registry must be a domain format and \'can have\' a port (p.e. registry.mydomain.com:443)');
 			}
 			return (validRegistry != null);
 		}
@@ -24,7 +24,7 @@ exports.k8sQuestions = [
 		type: 'input',
 		name: 'dockerNamespace', 
 		when: (answers) => answers.generatek8s === 'yes', 
-		message: '  (k8s) - Please inform the docker namespace (subfolder): ',
+		message: '  (k8s) - Please text the docker namespace (subfolder): ',
 		validate: function (dockerNamespace) {
 			var pattern = /^[a-z]{3,}$/g;
 			var validNamespace = pattern.exec(dockerNamespace);
@@ -38,7 +38,7 @@ exports.k8sQuestions = [
 		type: 'input',
 		name: 'clusterNamespace', 
 		when: (answers) => answers.generatek8s === 'yes', 
-		message: '  (k8s) - Inform the k8s namespace: ',
+		message: '  (k8s) - Text the k8s namespace: ',
 		validate: function (clusterNamespace) {
 			var pattern = /^([a-z]{2,}[\-]{0,1}[a-z]{2,}){1,}$/g;
 			var validNamespace = pattern.exec(clusterNamespace);
@@ -52,15 +52,14 @@ exports.k8sQuestions = [
 		type: 'input',
 		name: 'ingressHost', 
 		when: (answers) => answers.generatek8s === 'yes', 
-		message: '  (k8s) - Which will be the ingress hostname: ',
+		message: '  (k8s) - Which will be the ingress hostname? ',
 		validate: function (ingressHost) {
-			var pattern = /^([a-z]{1,}[\-]{0,1}[a-z]{1,}[\.]{0,1}[a-z]{1,}){1,}([\:]{1}[0-9]{3,5}){0,1}$/g;
+			var pattern = /^([a-z]{1,}[\-]{0,1}[a-z0-9]{1,}[\.]{0,1}[a-z]{1,}){1,}([\:]{1}[0-9]{3,5}){0,1}$/g;
 			var validHostname = pattern.exec(ingressHost);
 			if (!validHostname) {
-				console.log('\n "   ERROR: The ingress hostname must have a domain format (p.e. microservice.mydomain.com)');
+				console.log('\n "   ERROR: The ingress hostname must be a domain format (p.e. microservice.mydomain.com)');
 			}
 			return (validHostname != null);
 		}
 	}
 ];
-
